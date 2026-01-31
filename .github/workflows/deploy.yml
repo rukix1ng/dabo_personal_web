@@ -29,8 +29,14 @@ jobs:
             cp .env.production .env.local
           fi
           
-          echo "📥 Installing dependencies..."
-          npm install
+          echo "📥 Installing dependencies (if needed)..."
+          # Only install if package.json changed
+          if git diff HEAD@{1} HEAD --name-only | grep -q "package.json\|package-lock.json"; then
+            echo "📦 Package files changed, installing dependencies..."
+            npm ci --prefer-offline --no-audit
+          else
+            echo "✅ No package changes, skipping install"
+          fi
           
           echo "🔨 Building project..."
           npm run build
