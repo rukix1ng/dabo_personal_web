@@ -126,8 +126,10 @@ export function MediaImage({ src, alt, className, sizes, gallery, initialIndex =
           sizes={sizes}
           className={`object-cover transition-all duration-500 ${className || ""} group-hover/image:scale-105 group-hover/image:brightness-90`}
           onError={() => setHasError(true)}
-          priority
-          unoptimized
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
+          loading="lazy"
+          quality={75}
         />
         {/* Hover icon indicator */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover/image:opacity-100">
