@@ -45,7 +45,7 @@ echo "========================================"
 ```bash
 cd /Users/balabibo/Jobs/Study/dabo_personal
 git add .github/workflows/deploy.yml
-git commit -m "feat: add GitHub Actions auto-deployment"
+git commit -m "feat: optimize GitHub Actions deployment workflow"
 git push
 ```
 
@@ -58,11 +58,11 @@ git push
 ```bash
 # 修改 README
 echo "" >> README.md
-echo "✅ CI/CD 自动部署已配置" >> README.md
+echo "✅ CI/CD 自动部署已优化" >> README.md
 
 # 提交并推送
 git add README.md
-git commit -m "test: verify CI/CD deployment"
+git commit -m "test: verify optimized CI/CD deployment"
 git push
 ```
 
@@ -73,7 +73,7 @@ git push
 1. **查看 GitHub Actions**：
    访问：https://github.com/rukix1ng/dabo_personal_web/actions
    
-   应该看到工作流正在运行
+   应该看到工作流正在运行（预计 3-5 分钟完成）
 
 2. **查看部署日志**：
    点击工作流运行记录，查看详细日志
@@ -93,9 +93,29 @@ git push
 本地修改代码 → git push → GitHub Actions 自动运行 → 服务器自动更新
 ```
 
+**部署优化**：
+- ✅ 使用增量构建，不删除 `.next` 缓存
+- ✅ 添加超时保护，防止无限等待
+- ✅ 移除可能阻塞的数据库初始化步骤
+- ✅ 减少日志输出，加快部署速度
+- ✅ 预计部署时间：3-5 分钟（原来 10+ 分钟）
+
 **查看部署状态**：
 - GitHub Actions 页面：https://github.com/rukix1ng/dabo_personal_web/actions
 - 服务器日志：`ssh root@47.110.87.81 "pm2 logs dabo-personal"`
+
+---
+
+## 数据库初始化（仅在需要时手动执行）
+
+如果需要初始化或更新数据库架构，在服务器上手动执行：
+
+```bash
+ssh root@47.110.87.81
+cd /var/www/dabo_personal
+chmod +x scripts/init-db.sh
+./scripts/init-db.sh
+```
 
 ---
 
@@ -109,6 +129,9 @@ A: 在 GitHub Actions 页面，点击工作流，然后点击 "Run workflow"
 
 **Q: 如何暂停自动部署？**
 A: 在 `.github/workflows/deploy.yml` 中注释掉 `push:` 触发器
+
+**Q: 部署超时怎么办？**
+A: 工作流已设置 20 分钟总超时，单个步骤也有超时保护。如果仍然超时，检查服务器网络连接
 
 ---
 

@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20  # Overall job timeout protection
     
     steps:
     - name: Checkout code
@@ -19,9 +20,12 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
-        command_timeout: 15m
+        command_timeout: 20m
         script: |
+          set -e  # Exit on error
+          
           cd /var/www/dabo_personal
+          
           echo "📦 Pulling latest code..."
           git fetch origin main
           git reset --hard origin/main
@@ -36,46 +40,28 @@ jobs:
           fi
           
           echo "📥 Installing dependencies..."
-          npm ci --prefer-offline --no-audit
-          
-          echo "🧹 Cleaning build cache..."
-          rm -rf .next
-          
-          echo "🗄️  Initializing database (background)..."
-          chmod +x scripts/init-db.sh
-          ./scripts/init-db.sh &
+          # Add timeout protection and fallback
+          timeout 300 npm ci --prefer-offline --no-audit || {
+            echo "⚠️  npm ci failed, trying npm install..."
+            timeout 300 npm install --prefer-offline --no-audit
+          }
           
           echo "🔨 Building project..."
-          npm run build
+          # Use incremental builds - don't delete .next
+          timeout 600 npm run build
           
           echo "📁 Ensuring logs directory exists..."
           mkdir -p logs
           
           echo "🔄 Restarting application..."
-          pm2 restart dabo-personal --update-env
+          pm2 restart dabo-personal --update-env || pm2 start ecosystem.config.js
           
           echo "⏳ Waiting for application to stabilize..."
-          sleep 5
-          
-          echo "📋 Checking application status..."
-          pm2 status
-          
-          echo "📋 Checking error logs..."
-          if [ -f logs/err.log ]; then
-            echo "=== Last 30 lines of error log ==="
-            tail -n 30 logs/err.log
-          else
-            echo "No error log file found"
-          fi
-          
-          echo "📋 Checking output logs..."
-          if [ -f logs/out.log ]; then
-            echo "=== Last 20 lines of output log ==="
-            tail -n 20 logs/out.log
-          else
-            echo "No output log file found"
-          fi
+          sleep 3
           
           echo "✅ Deployment completed!"
+          echo "📋 Application status:"
+          pm2 status dabo-personal
+          
           echo "📝 Deployed commit:"
           git log -1 --oneline
