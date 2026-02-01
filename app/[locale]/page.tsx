@@ -234,13 +234,20 @@ export default async function LocaleHome({ params }: PageProps) {
         </div>
 
         {/* Academic Positions List */}
-        <div className="flex flex-col gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {t.sections.academicPositions.items.map((item, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
-              <p className="text-sm leading-relaxed text-foreground sm:text-base">
-                {item}
-              </p>
+            <div
+              key={index}
+              className="group rounded-lg border border-border/50 bg-card/30 p-4 transition-all hover:border-primary/50 hover:bg-card/50"
+            >
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
+                  {index + 1}
+                </span>
+                <p className="flex-1 text-sm leading-relaxed text-foreground sm:text-base">
+                  {item}
+                </p>
+              </div>
             </div>
           ))}
         </div>
