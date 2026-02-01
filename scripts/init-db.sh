@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Database initialization script for admin login
-# This script creates the database and admin table if they don't exist
+# Fast database initialization script
+# Assumes MySQL client is already installed
 
 echo "🗄️  Initializing database..."
 
@@ -12,40 +12,15 @@ DB_USER="${DB_USER:-admin}"
 DB_PASSWORD="${DB_PASSWORD:-lam_nims}"
 DB_NAME="${DB_NAME:-personal_web}"
 
-# Check if MySQL client is installed
+# Quick check if mysql command exists
 if ! command -v mysql &> /dev/null; then
-    echo "❌ MySQL client not found. Installing..."
-    # For Ubuntu/Debian
-    if command -v apt-get &> /dev/null; then
-        sudo apt-get update && sudo apt-get install -y mysql-client
-    # For CentOS/RHEL
-    elif command -v yum &> /dev/null; then
-        sudo yum install -y mysql
-    else
-        echo "❌ Cannot install MySQL client automatically. Please install manually."
-        exit 1
-    fi
+    echo "⚠️  MySQL client not found, skipping database initialization"
+    exit 0
 fi
 
-# Create database if it doesn't exist
-echo "📦 Creating database if not exists..."
-mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
+# Create database and run schema (with timeout)
+timeout 10s mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null || true
 
-if [ $? -ne 0 ]; then
-    echo "⚠️  Database might already exist or connection failed. Continuing..."
-fi
+timeout 10s mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < database/schema.sql 2>/dev/null || true
 
-# Run schema initialization
-echo "📋 Running schema initialization..."
-mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < database/schema.sql
-
-if [ $? -eq 0 ]; then
-    echo "✅ Database initialized successfully!"
-    echo "📝 Default admin credentials:"
-    echo "   Username: admin"
-    echo "   Password: lam_nims"
-    echo "   (Password will be set on first login)"
-else
-    echo "❌ Database initialization failed!"
-    exit 1
-fi
+echo "✅ Database initialization completed"

@@ -41,9 +41,9 @@ jobs:
           echo "🧹 Cleaning build cache..."
           rm -rf .next
           
-          echo "🗄️  Initializing database..."
+          echo "🗄️  Initializing database (background)..."
           chmod +x scripts/init-db.sh
-          ./scripts/init-db.sh || echo "⚠️  Database initialization skipped (might already be initialized)"
+          ./scripts/init-db.sh &
           
           echo "🔨 Building project..."
           npm run build
