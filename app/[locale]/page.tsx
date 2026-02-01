@@ -1,5 +1,6 @@
 import { content, type Locale } from "@/lib/i18n";
 import { AvatarImage } from "@/components/avatar-image";
+import { FormattedText } from "@/components/formatted-text";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 type PageProps = {
@@ -144,9 +145,10 @@ export default async function LocaleHome({ params }: PageProps) {
           <h3 className="text-base font-bold text-foreground sm:text-lg">
             {t.sections.mainResearchAreas.title}:
           </h3>
-          <p className="text-sm leading-relaxed text-foreground sm:text-base">
-            {t.sections.mainResearchAreas.content}
-          </p>
+          <FormattedText
+            text={t.sections.mainResearchAreas.content}
+            className="text-sm leading-relaxed text-foreground sm:text-base"
+          />
         </div>
 
         {/* Research Content */}
@@ -168,9 +170,10 @@ export default async function LocaleHome({ params }: PageProps) {
           </div>
 
           {/* Description */}
-          <p className="text-sm leading-relaxed text-foreground sm:text-base">
-            {t.sections.researchContent.description}
-          </p>
+          <FormattedText
+            text={t.sections.researchContent.description}
+            className="text-sm leading-relaxed text-foreground sm:text-base"
+          />
 
           {/* Detailed Description */}
           <p className="text-sm leading-relaxed text-foreground sm:text-base">

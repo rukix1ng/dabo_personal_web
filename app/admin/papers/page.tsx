@@ -17,6 +17,16 @@ export default function PapersManagementPage() {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [error, setError] = useState("");
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState<{
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNextPage: boolean;
+        hasPrevPage: boolean;
+    } | null>(null);
     const [formData, setFormData] = useState<PaperFormData>({
         title: "",
         authors: "",
@@ -26,20 +36,34 @@ export default function PapersManagementPage() {
     });
 
     // Fetch papers
-    const fetchPapers = async () => {
+    const fetchPapers = async (currentPage: number = 1) => {
         try {
-            const res = await fetch("/api/admin/papers");
+            const res = await fetch(`/api/admin/papers?page=${currentPage}`);
+            if (!res.ok) {
+                if (res.status === 401) {
+                    setError("未授权访问，请重新登录");
+                } else {
+                    setError("获取论文失败");
+                }
+                setPapers([]);
+                setPagination(null);
+                return;
+            }
             const data = await res.json();
             setPapers(data.papers || []);
+            setPagination(data.pagination || null);
+            setPage(currentPage);
+            setError("");
         } catch (error) {
-            console.error("Error fetching papers:", error);
+            console.error("获取论文出错:", error);
+            setError("获取论文出错");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchPapers();
+        fetchPapers(1);
     }, []);
 
     // Handle form submit
@@ -74,13 +98,13 @@ export default function PapersManagementPage() {
                 resetForm();
             }
         } catch (error) {
-            console.error("Error saving paper:", error);
+            console.error("保存论文出错:", error);
         }
     };
 
     // Handle delete
     const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this paper?")) return;
+        if (!confirm("确定要删除这篇论文吗？")) return;
 
         try {
             const res = await fetch(`/api/admin/papers/${id}`, {
@@ -91,7 +115,7 @@ export default function PapersManagementPage() {
                 await fetchPapers();
             }
         } catch (error) {
-            console.error("Error deleting paper:", error);
+            console.error("删除论文出错:", error);
         }
     };
 
@@ -128,7 +152,7 @@ export default function PapersManagementPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <div className="text-muted-foreground">Loading...</div>
+                <div className="text-muted-foreground">加载中...</div>
             </div>
         );
     }
@@ -138,9 +162,9 @@ export default function PapersManagementPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground">Papers Management</h1>
+                    <h1 className="text-3xl font-bold text-foreground">论文管理</h1>
                     <p className="mt-2 text-muted-foreground">
-                        Manage your research publications
+                        管理您的研究出版物
                     </p>
                 </div>
                 <button
@@ -148,9 +172,16 @@ export default function PapersManagementPage() {
                     className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                     <Plus className="h-4 w-4" />
-                    Add Paper
+                    添加论文
                 </button>
             </div>
+
+            {/* Error Message */}
+            {error && (
+                <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+                    {error}
+                </div>
+            )}
 
             {/* Form Modal */}
             {showForm && (
@@ -158,7 +189,7 @@ export default function PapersManagementPage() {
                     <div className="w-full max-w-2xl rounded-xl border border-border bg-card p-6">
                         <div className="mb-6 flex items-center justify-between">
                             <h2 className="text-xl font-bold text-foreground">
-                                {editingId ? "Edit Paper" : "Add New Paper"}
+                                {editingId ? "编辑论文" : "添加新论文"}
                             </h2>
                             <button
                                 onClick={resetForm}
@@ -171,7 +202,7 @@ export default function PapersManagementPage() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-foreground">
-                                    Title *
+                                    标题 *
                                 </label>
                                 <input
                                     type="text"
@@ -186,7 +217,7 @@ export default function PapersManagementPage() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-foreground">
-                                    Authors * (comma-separated)
+                                    作者 * (逗号分隔)
                                 </label>
                                 <input
                                     type="text"
@@ -194,7 +225,7 @@ export default function PapersManagementPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, authors: e.target.value })
                                     }
-                                    placeholder="John Doe, Jane Smith"
+                                    placeholder="张三, 李四"
                                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                     required
                                 />
@@ -203,7 +234,7 @@ export default function PapersManagementPage() {
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-foreground">
-                                        Journal *
+                                        期刊 *
                                     </label>
                                     <input
                                         type="text"
@@ -218,7 +249,7 @@ export default function PapersManagementPage() {
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-foreground">
-                                        Year *
+                                        年份 *
                                     </label>
                                     <input
                                         type="number"
@@ -236,7 +267,7 @@ export default function PapersManagementPage() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-foreground">
-                                    Link (optional)
+                                    链接 (可选)
                                 </label>
                                 <input
                                     type="url"
@@ -255,14 +286,14 @@ export default function PapersManagementPage() {
                                     className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                                 >
                                     <Save className="h-4 w-4" />
-                                    {editingId ? "Update" : "Create"}
+                                    {editingId ? "更新" : "创建"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={resetForm}
                                     className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
                                 >
-                                    Cancel
+                                    取消
                                 </button>
                             </div>
                         </form>
@@ -277,19 +308,19 @@ export default function PapersManagementPage() {
                         <thead>
                             <tr className="border-b border-border bg-muted/50">
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    Title
+                                    标题
                                 </th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    Authors
+                                    作者
                                 </th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    Journal
+                                    期刊
                                 </th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    Year
+                                    年份
                                 </th>
                                 <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                                    Actions
+                                    操作
                                 </th>
                             </tr>
                         </thead>
@@ -300,7 +331,7 @@ export default function PapersManagementPage() {
                                         colSpan={5}
                                         className="px-6 py-12 text-center text-muted-foreground"
                                     >
-                                        No papers found. Click "Add Paper" to create one.
+                                        未找到论文。点击"添加论文"创建一个。
                                     </td>
                                 </tr>
                             ) : (
@@ -310,9 +341,20 @@ export default function PapersManagementPage() {
                                         className="border-b border-border transition-colors hover:bg-muted/50"
                                     >
                                         <td className="px-6 py-4">
-                                            <div className="font-medium text-foreground">
-                                                {paper.title}
-                                            </div>
+                                            {paper.link ? (
+                                                <a
+                                                    href={paper.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="font-medium text-primary hover:underline"
+                                                >
+                                                    {paper.title}
+                                                </a>
+                                            ) : (
+                                                <div className="font-medium text-foreground">
+                                                    {paper.title}
+                                                </div>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm text-muted-foreground">
@@ -335,14 +377,14 @@ export default function PapersManagementPage() {
                                                 <button
                                                     onClick={() => handleEdit(paper)}
                                                     className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10"
-                                                    title="Edit"
+                                                    title="编辑"
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(paper.id)}
                                                     className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-500/10"
-                                                    title="Delete"
+                                                    title="删除"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>
@@ -355,6 +397,54 @@ export default function PapersManagementPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Pagination */}
+            {pagination && (
+                <div className="flex items-center justify-between rounded-xl border border-border bg-card p-4">
+                    <div className="text-sm text-muted-foreground">
+                        共 <span className="font-semibold text-foreground">{pagination.total}</span> 篇论文
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                if (pagination.hasPrevPage) {
+                                    fetchPapers(page - 1);
+                                }
+                            }}
+                            disabled={!pagination.hasPrevPage}
+                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            上一页
+                        </button>
+                        <div className="flex items-center gap-1">
+                            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                                <button
+                                    key={pageNum}
+                                    onClick={() => fetchPapers(pageNum)}
+                                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                                        pageNum === page
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'text-foreground hover:bg-muted'
+                                    }`}
+                                >
+                                    {pageNum}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (pagination.hasNextPage) {
+                                    fetchPapers(page + 1);
+                                }
+                            }}
+                            disabled={!pagination.hasNextPage}
+                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            下一页
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

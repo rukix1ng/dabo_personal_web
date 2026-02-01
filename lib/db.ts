@@ -4,7 +4,12 @@ let connection: mysql.Connection | null = null;
 
 export async function getConnection() {
     if (connection) {
-        return connection;
+        try {
+            await connection.ping();
+            return connection;
+        } catch (error) {
+            connection = null;
+        }
     }
 
     try {

@@ -7,7 +7,6 @@ function getBrowserLocale(request: NextRequest): Locale {
   const acceptLanguage = request.headers.get("accept-language");
   if (!acceptLanguage) return defaultLocale;
 
-  // Parse Accept-Language header
   const languages = acceptLanguage
     .split(",")
     .map((lang) => {
@@ -17,7 +16,6 @@ function getBrowserLocale(request: NextRequest): Locale {
     })
     .sort((a, b) => b.quality - a.quality);
 
-  // Find matching locale
   for (const { locale } of languages) {
     if (locale === "zh" || locale === "ja" || locale === "en") {
       return locale as Locale;
@@ -30,12 +28,29 @@ function getBrowserLocale(request: NextRequest): Locale {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Check if it's a language path with /admin
+  const localeRegex = new RegExp(`^/(${locales.join('|')})/admin`);
+  if (localeRegex.test(pathname)) {
+    const redirectUrl = new URL('/admin', request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Redirect /admin to /admin/papers
+  if (pathname === '/admin') {
+    const redirectUrl = new URL('/admin/papers', request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Skip processing for Next.js internals, API routes, public files, and admin routes
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/admin") ||
     PUBLIC_FILE.test(pathname)
   ) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("x-pathname", pathname);
+    return response;
   }
 
   const hasLocale = locales.some(
@@ -43,11 +58,10 @@ export function proxy(request: NextRequest) {
   );
 
   if (!hasLocale) {
-    // Check cookie first, then browser language, then default
     const cookieLocale = request.cookies.get("locale")?.value as Locale | undefined;
     const browserLocale = cookieLocale || getBrowserLocale(request);
     const locale = locales.includes(browserLocale) ? browserLocale : defaultLocale;
-    
+
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
     return NextResponse.redirect(url);
@@ -57,11 +71,11 @@ export function proxy(request: NextRequest) {
   const response = NextResponse.next();
   response.cookies.set("locale", locale, {
     path: "/",
-    maxAge: 60 * 60 * 24 * 365, // 1 year
+    maxAge: 60 * 60 * 24 * 365,
   });
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"],
+  matcher: ["/((?!_next|.*\\..*|api).*)"],
 };

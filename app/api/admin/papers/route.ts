@@ -4,18 +4,38 @@ import { getCurrentAdmin } from '@/lib/auth';
 import type { Publication } from '@/types/database';
 
 // GET /api/admin/papers - Get all papers
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const admin = await getCurrentAdmin();
         if (!admin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const papers = await query<Publication>(
-            'SELECT * FROM publications ORDER BY year DESC, id DESC'
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = 20;
+        const offset = (page - 1) * limit;
+
+        const papers = await query<any>(
+            'SELECT * FROM publications ORDER BY year DESC, id DESC LIMIT ? OFFSET ?',
+            [limit, offset]
         );
 
-        return NextResponse.json({ papers });
+        const countResult = await query<any>('SELECT COUNT(*) as total FROM publications');
+        const total = countResult[0]?.total || 0;
+        const totalPages = Math.ceil(total / limit);
+
+        return NextResponse.json({ 
+            papers,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        });
     } catch (error) {
         console.error('Error fetching papers:', error);
         return NextResponse.json(
