@@ -24,9 +24,9 @@ export const content = {
       ],
     },
     hero: {
-      name: "DA BO",
+      name: "Dr. Da Bo",
       title:
-        "Principal Researcher, Quantum Beam Diffraction Group, Advanced Analysis Division, Research Center for Materials Science"
+        "Senior Researcher, National Institute for Materials Science (NIMS)"
     },
     info: {
       phoneLabel: "Phone",
@@ -56,28 +56,31 @@ export const content = {
       personalProfile: {
         title: "Personal Profile",
         content:
-          "Your Name holds a BA in International Economics from Institute of International Relations, and an MA and Ph.D in economics from University of Windsor and University of Guelph in Canada respectively. They were appointed Assistant Professor at the school of Public Policy and Public Finance at Central University of Finance and Economics in 2009, Associate Professor in 2016. In March 2021, they joined Tsinghua University as an associate professor. Since March 2023, they have served as the Director of Global Climate Governance Research at the Institute of Climate Change and Sustainable Development at Tsinghua University.",
+          "Dr. Da Bo is currently a Senior Researcher at the National Institute for Materials Science (NIMS) in Japan. He obtained his Ph.D. in Physics from the University of Science and Technology of China (USTC) in 2013, and subsequently joined NIMS, becoming the only person under 30 to receive a permanent position at the institute due to his outstanding research achievements. As an expert in materials physics and electron microscopy, Dr. Da Bo is dedicated to developing novel material characterization and measurement analysis methods by integrating electron beam theory with artificial intelligence (AI) technology. He has published numerous papers in top-tier journals such as Nature Communications and Physical Review Letters, and has received multiple prestigious honors including the NIMS President's Award, the Hitachi Foundation Kurata Grant, and the Kao Science Award. He currently serves as Team Leader for the JST-next project in the materials circulation field and holds core positions in several international academic organizations, making him an active next-generation materials scientist on the international stage.",
       },
       mainResearchAreas: {
         title: "Main Research Areas",
         content:
-          "Their main research areas include climate policy and governance, climate risk and adaptation, and environmental economics. Their papers on climate policy and governance have appeared in journals such as Foreign Policy, Financial and Economic Review, China International Studies, Environmental Science & Ecotechnology, World Environment. Their research on climate adaptation and risk has been appeared in such outlets as Journal of Insurance Issues, Climatic Change, Social Indicators Research, Economics and Human Biology. Their work in environmental economics has appeared in journals such as Environmental and Resource Economics, Journal of Cleaner Production, European Journal of Health Economics, et al. In 2015, their paper Climatic Variations and the Market Value of Insurance Firms was awarded the second-best paper by the Journal of Insurance Issues and the School of Insurance, Actuarial Science, and Risk Management at St. John's University in US. In 2023, they served as the executive deputy editor of the book Introduction to Global Climate Governance, a series of books on carbon peak and carbon neutrality published by the Chinese Association for Science and Technology, with former China Climate Special Envoy Zhenhua Xie serving as the editor-in-chief.",
+          "Dr. Da Bo's research primarily focuses on computational physics, materials physics, and advanced materials characterization. His core areas include:\n\n**1. Surface Analysis of Nanomaterials:** Dedicated to solving the signal extraction challenges of substrate-supported nanomaterials, developing new methods to obtain intrinsic material information.\n\n**2. Electron Microscopy & Electron Beam Theory:** Studying the interaction between charged particles and materials, low-energy electron transport properties, and design principles of electron beam equipment.\n\n**3. Materials Informatics & AI Metrology:** Applying machine learning algorithms to traditional measurement instruments to extract weak signals from complex backgrounds, improving measurement accuracy and efficiency.",
       },
       researchContent: {
         title: "Research Content",
         keywords: ["Nanomaterial", "Surface analysis", "Background signal", "Secondary electron"],
         description:
-          "Dr Bo Da has been engaged in developing novel measurement-analysis methods to extract more information from measured spectra by surface analysis techniques. For instance, he developed the reverse Monte Carlo method to extract optical constant of bulk material from measured surface electron spectra, and the extended Mermin method to determine low energy electron mean free path of bulk material. Most recently, Da's research focus has been largely related to development of new measurement-analysis method for nanomaterial samples. The virtual substrate method developed by him represents a benchmark for surface analysis to provide \"free-standing\" information about supported nanomaterials, and brought him President's Prize awarded by NIMS. He has had ten first-author papers related to these new methods published in various journals, including Nature Communications, Physical Review Letters and Journal of Applied Physics, among others.",
+          "Dr. Da Bo has achieved revolutionary breakthroughs in electron microscopy algorithms, software development, and experimental verification. His major research achievements include:\n\n**1. Virtual Substrate Method and Background Signal Analysis:** Addressing the challenge of nanomaterial signals being masked by substrate signals in traditional reflection mode, Dr. Da Bo, inspired by the \"four-point probe method\" and the \"chop-nod method\" in infrared astronomy, proposed the \"Virtual Substrate Method.\" This method establishes a new benchmark for surface analysis, eliminating substrate interference and extracting \"free-standing\" information of nanomaterials from secondary electron spectra. This enables quantitative detection of electron-electron interactions in nanomaterials through energy-filtered scanning electron microscopy (EF-SEM).\n\n**2. Heuristic Data-driven Spectral Analysis:** He successfully introduced artificial intelligence technology into weak signal measurement, developing machine learning-based analysis algorithms. This method not only significantly improved the signal-to-noise ratio in semiconductor material detection but also achieved cross-domain applications, such as successful transformation in Raman spectroscopy non-invasive blood glucose detection technology.\n\n**3. Electronic Poisson's Spot and Novel \"Rotational Crystal\" Materials:** In fundamental physics experiments, Dr. Da Bo first predicted and discovered the \"Poisson's spot\" phenomenon in electronics, providing theoretical support for next-generation parallel electron beam lithography technology. During this process, he discovered an axially symmetric \"rotational crystal material\" between quasicrystals and crystals, a discovery evaluated as having Nobel Prize potential.",
         detailedDescription:
           "Characterization techniques available for bulk or thin-film solid-state materials have been extended to substrate-supported nanomaterials, but generally non-quantitatively. This is because the nanomaterial signals are inevitably buried in the signals from the underlying substrate in common reflection-configuration techniques. Here, we propose a virtual substrate method, inspired by the four-point probe technique for resistance measurement as well as the chop-nod method in infrared astronomy, to characterize nanomaterials without the influence of underlying substrate signals from four interrelated measurements. This method in secondary electron (SE) microscopy, a SE spectrum (white electrons) associated with the reflectivity difference between two different substrates can be tracked and controlled. The SE spectrum is used to quantitatively investigate the covering nanomaterial based on subtle changes in the transmission of the nanomaterial with high efficiency rivaling that of conventional core-level electrons. The virtual substrate method represents a benchmark for surface analysis to provide \"free-standing\" information about supported nanomaterials.",
       },
       experience: {
         title: "Experience",
         items: [
-          { year: "2023", institution: "Research Center for Materials Science, Advanced Analysis Division, Quantum Beam Diffraction Group", position: "Principal Researcher" },
-          { year: "2021", institution: "Research Center for Materials Science", position: "Researcher" },
-          { year: "2016", institution: "Research Center for Materials Science", position: "Researcher" },
-          { year: "2009", institution: "Research Center for Materials Science", position: "Researcher" },
+          { year: "2024 – Present", institution: "JST-next Project (Materials Circulation)", position: "Team Leader" },
+          { year: "April 2019 – Present", institution: "National Institute for Materials Science (NIMS)", position: "Senior Researcher" },
+          { year: "December 2016 – April 2019", institution: "National Institute for Materials Science (NIMS)", position: "Researcher" },
+          { year: "January 2015 – December 2016", institution: "National Institute for Materials Science (NIMS)", position: "ICYS Researcher" },
+          { year: "November 2013 – January 2015", institution: "National Institute for Materials Science (NIMS)", position: "Postdoctoral Researcher" },
+          { year: "September 2008 – June 2013", institution: "University of Science and Technology of China", position: "Ph.D. in Physics" },
+          { year: "September 2004 – June 2008", institution: "University of Science and Technology of China", position: "B.S. in Physics" },
         ],
       },
       academicPositions: {
@@ -368,8 +371,7 @@ export const content = {
     },
     hero: {
       name: "達 博",
-      title:
-        "マテリアル基盤研究センター 先端解析分野 量子ビーム回折グループ 主任研究員"
+      title: "物質・材料研究機構（NIMS）主幹研究員"
     },
     info: {
       phoneLabel: "電話",
@@ -399,28 +401,31 @@ export const content = {
       personalProfile: {
         title: "個人プロフィール",
         content:
-          "あなたの名前は国際関係学院で国際経済学の学士号を取得し、カナダのウィンザー大学とゲルフ大学で経済学の修士号と博士号を取得しました。2009 年に中央財経大学公共政策・公共財政学部の助教に任命され、2016 年に准教授に昇進しました。2021 年 3 月、清華大学に准教授として着任しました。2023 年 3 月より、清華大学気候変動・持続可能発展研究院のグローバル気候ガバナンス研究センター長を務めています。",
+          "達博博士は現在、日本の物質・材料研究機構（NIMS）の主幹研究員です。2013年に中国科学技術大学で物理学博士号を取得後、NIMSに入所し、卓越した研究成果により30歳未満で同機構の永久職を獲得した唯一の人物となりました。材料物理学と電子顕微鏡学の専門家として、達博博士は電子ビーム理論と人工知能（AI）技術を融合させ、新しい材料評価・測定分析手法の開発に取り組んでいます。Nature Communications、Physical Review Lettersなどのトップジャーナルに多数の論文を発表し、NIMS理事長賞、日立財団倉田奨励金、花王科学奨励賞など数々の栄誉を受けています。現在、JST-nextプロジェクトの材料循環分野のチームリーダーを務め、複数の国際学術組織で中核的な役割を担う、国際舞台で活躍する次世代の材料科学者です。",
       },
       mainResearchAreas: {
         title: "主要研究分野",
         content:
-          "主要研究分野は、気候政策・ガバナンス、気候リスク・適応、環境経済学です。気候政策・ガバナンスに関する論文は、『Foreign Policy』、『Financial and Economic Review』、『China International Studies』、『Environmental Science & Ecotechnology』、『World Environment』などのジャーナルに掲載されています。気候適応・リスクに関する研究は、『Journal of Insurance Issues』、『Climatic Change』、『Social Indicators Research』、『Economics and Human Biology』などのジャーナルに掲載されています。環境経済学に関する研究は、『Environmental and Resource Economics』、『Journal of Cleaner Production』、『European Journal of Health Economics』などのジャーナルに掲載されています。2015 年、論文「気候変動と保険会社の市場価値」が『Journal of Insurance Issues』と米国セントジョンズ大学保険・アクチュアリー科学・リスク管理学部から第二優秀論文賞を受賞しました。2023 年、中国科学技術協会のカーボンピーク・カーボンニュートラルシリーズの一冊である『グローバル気候ガバナンス入門』の執行副編集長を務め、前中国気候特使の解振華氏が編集長を務めました。",
+          "達博博士の研究は、計算物理学、材料物理学、先端材料評価に集中しており、主要な研究分野は以下の通りです：\n\n**1. ナノ材料の表面分析：** 基板支持ナノ材料の信号抽出の課題を解決し、材料の本質的な情報を取得する新しい手法の開発に専念しています。\n\n**2. 電子顕微鏡学と電子ビーム理論：** 荷電粒子と材料の相互作用、低エネルギー電子輸送特性、電子ビーム装置の設計原理を研究しています。\n\n**3. 材料情報学とAI計測：** 機械学習アルゴリズムを従来の測定機器に適用し、複雑な背景から微弱な信号を抽出し、測定精度と効率を向上させています。",
       },
       researchContent: {
         title: "研究内容",
         keywords: ["ナノ材料", "表面分析", "バックグラウンド信号", "二次電子"],
         description:
-          "達波博士は、表面分析技術によって測定されたスペクトルからより多くの情報を抽出するための新しい測定分析方法の開発に従事してきました。例えば、測定された表面電子スペクトルからバルク材料の光学定数を抽出する逆モンテカルロ法、およびバルク材料の低エネルギー電子平均自由行程を決定する拡張 Mermin 法を開発しました。最近、達の研究焦点は主にナノ材料サンプルの新しい測定分析方法の開発に関連しています。彼が開発した仮想基板法は、支持ナノ材料に関する「独立」情報を提供する表面分析のベンチマークを表し、NIMS から総裁賞を受賞しました。彼は、Nature Communications、Physical Review Letters、Journal of Applied Physics など、さまざまなジャーナルにこれらの新しい方法に関連する 10 本の第一著者論文を発表しています。",
+          "達博博士は、電子顕微鏡アルゴリズム、ソフトウェア開発、実験検証において革命的なブレークスルーを達成しました。主な研究成果は以下の通りです：\n\n**1. 仮想基板法とバックグラウンド信号分析：** 従来の反射モードでナノ材料信号が基板信号に隠れる問題に対し、達博博士は「四探針法」と赤外天文学の「チョップ・ノッド法」に着想を得て「仮想基板法」を提案しました。この方法は表面分析の新しいベンチマークを確立し、基板干渉を除去し、二次電子スペクトルからナノ材料の「自立」情報を抽出します。これにより、エネルギーフィルタリング走査電子顕微鏡（EF-SEM）を通じてナノ材料の電子-電子相互作用の定量的検出が可能になりました。\n\n**2. ヒューリスティックデータ駆動型スペクトル分析：** 人工知能技術を微弱信号測定に導入し、機械学習ベースの分析アルゴリズムを開発しました。この方法は半導体材料検出の信号対雑音比を大幅に向上させただけでなく、ラマン分光法による非侵襲的血糖検出技術への応用など、分野横断的な応用を実現しました。\n\n**3. 電子ポアソンスポットと新型「回転結晶」材料：** 基礎物理実験において、達博博士は電子における「ポアソンスポット」現象を初めて予測・発見し、次世代並列電子ビームリソグラフィ技術の理論的基盤を提供しました。この過程で、準結晶と結晶の中間に位置する軸対称「回転結晶材料」を発見し、この発見はノーベル賞の可能性を持つ画期的な研究と評価されています。",
         detailedDescription:
           "バルクまたは薄膜の固体材料に利用可能な特性評価技術は、基板支持ナノ材料に拡張されていますが、一般的に非定量的です。これは、一般的な反射構成技術では、ナノ材料信号が必然的に下層基板からの信号に埋もれるためです。ここでは、抵抗測定のための 4 点プローブ技術および赤外天文学の chop-nod 法に触発された仮想基板法を提案し、4 つの相互関連する測定から下層基板信号の影響を受けずにナノ材料を特性評価します。二次電子（SE）顕微鏡におけるこの方法では、2 つの異なる基板間の反射率の差に関連する SE スペクトル（白電子）を追跡および制御できます。SE スペクトルは、従来のコアレベル電子に匹敵する高効率で、ナノ材料の透過の微妙な変化に基づいて被覆ナノ材料を定量的に調査するために使用されます。仮想基板法は、支持ナノ材料に関する「独立」情報を提供する表面分析のベンチマークを表します。",
       },
       experience: {
         title: "経歴",
         items: [
-          { year: "2023年", institution: "マテリアル基盤研究センター 先端解析分野 量子ビーム回折グループ", position: "主任研究員" },
-          { year: "2021年", institution: "マテリアル基盤研究センター", position: "研究員" },
-          { year: "2016年", institution: "マテリアル基盤研究センター", position: "研究員" },
-          { year: "2009年", institution: "マテリアル基盤研究センター", position: "研究員" },
+          { year: "2024年 – 現在", institution: "JST-nextプロジェクト（材料循環）", position: "チームリーダー" },
+          { year: "2019年4月 – 現在", institution: "物質・材料研究機構（NIMS）", position: "主幹研究員" },
+          { year: "2016年12月 – 2019年4月", institution: "物質・材料研究機構（NIMS）", position: "研究員" },
+          { year: "2015年1月 – 2016年12月", institution: "物質・材料研究機構（NIMS）", position: "ICYS研究員" },
+          { year: "2013年11月 – 2015年1月", institution: "物質・材料研究機構（NIMS）", position: "ポスドク研究員" },
+          { year: "2008年9月 – 2013年6月", institution: "中国科学技術大学", position: "理学博士（物理学）" },
+          { year: "2004年9月 – 2008年6月", institution: "中国科学技術大学", position: "理学学士（物理学）" },
         ],
       },
       academicPositions: {
