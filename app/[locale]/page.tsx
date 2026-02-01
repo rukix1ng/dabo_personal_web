@@ -223,6 +223,29 @@ export default async function LocaleHome({ params }: PageProps) {
         </div>
       </section>
 
+      {/* Academic Positions Section */}
+      <section id="academic-positions" className="flex flex-col gap-6">
+        {/* Section Title with Primary Color Bar */}
+        <div className="flex items-center gap-3">
+          <div className="h-6 w-1 bg-primary" />
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
+            {t.sections.academicPositions.title}
+          </h2>
+        </div>
+
+        {/* Academic Positions List */}
+        <div className="flex flex-col gap-3">
+          {t.sections.academicPositions.items.map((item, index) => (
+            <div key={index} className="flex items-start gap-3">
+              <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
+              <p className="text-sm leading-relaxed text-foreground sm:text-base">
+                {item}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

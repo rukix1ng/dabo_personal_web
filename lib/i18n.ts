@@ -80,6 +80,17 @@ export const content = {
           { year: "2009", institution: "Research Center for Materials Science", position: "Researcher" },
         ],
       },
+      academicPositions: {
+        title: "Academic Positions & Social Services",
+        items: [
+          "Head of External Relations and Liaison, Japan Society for Applied Surface Analysis",
+          "President, Japan Monte Carlo Method Association",
+          "Chair, Shimizu Award Selection Committee",
+          "Vice President, Materials Division, Japan Doctoral Association",
+          "Director, NIMS Branch, USTC Japan Alumni Association",
+          "Creator of NIMS Official Slogan: \"Materials Change the World, We Create Materials\"",
+        ],
+      },
       projectsTitle: "Projects & Consulting",
       projects: [
         "National program on quantum-enabled semiconductor devices",
@@ -237,6 +248,17 @@ export const content = {
           { year: "2013年11月 – 2015年1月", institution: "日本国立材料科学研究所 (NIMS)", position: "博士后研究员" },
           { year: "2008年9月 – 2013年6月", institution: "中国科学技术大学", position: "理学博士（物理学）" },
           { year: "2004年9月 – 2008年6月", institution: "中国科学技术大学", position: "理学学士（物理学）" },
+        ],
+      },
+      academicPositions: {
+        title: "学术兼职与社会服务",
+        items: [
+          "日本应用表面分析学会 对外联系交涉部负责人",
+          "日本蒙特卡洛方法协会 理事长",
+          "Shimizu奖 评选委员会委员长",
+          "日本博士协会 材料部门副会长",
+          "中国科学技术大学日本校友会 科研所分会长",
+          "NIMS官方标语制定者：\"材料改变世界，我们创造材料\"",
         ],
       },
       projectsTitle: "项目与咨询",
@@ -399,6 +421,17 @@ export const content = {
           { year: "2021年", institution: "マテリアル基盤研究センター", position: "研究員" },
           { year: "2016年", institution: "マテリアル基盤研究センター", position: "研究員" },
           { year: "2009年", institution: "マテリアル基盤研究センター", position: "研究員" },
+        ],
+      },
+      academicPositions: {
+        title: "学術兼任・社会貢献",
+        items: [
+          "日本表面真空学会 渉外・交渉部担当",
+          "日本モンテカルロ法協会 理事長",
+          "清水賞 選考委員長",
+          "日本博士協会 材料部門副会長",
+          "中国科学技術大学日本同窓会 科研所分会長",
+          "NIMS公式スローガン制定者：「材料が世界を変える、我々が材料を創る」",
         ],
       },
       projectsTitle: "プロジェクト／コンサルティング",
