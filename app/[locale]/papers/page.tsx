@@ -3,6 +3,10 @@ import { PapersPageClient } from "./papers-client";
 import { query } from "@/lib/db";
 import type { Publication } from "@/types/database";
 
+// Force dynamic rendering - don't try to build this page statically
+// This prevents database connections during build time
+export const dynamic = 'force-dynamic';
+
 type PageProps = {
   params: Promise<{ locale: Locale }>;
 };
