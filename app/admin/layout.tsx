@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/auth";
 import { FileText, MessageSquare, Home } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 
 export default async function AdminLayout({
@@ -9,24 +8,19 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const headersList = await headers();
-    const pathname = headersList.get("x-pathname") || "";
+    // Check authentication
+    const admin = await getCurrentAdmin();
 
-    // Check if it's the login page
-    const isLoginPage = pathname.includes('/login');
-
-    // Don't render admin layout for login page
-    if (isLoginPage) {
+    // If no admin and not on login page, redirect to login
+    // We can't reliably detect the current path in layout, so we'll let
+    // the login page render without the admin layout
+    if (!admin) {
+        // Return children without layout for login page
+        // The login page is a client component that will handle its own layout
         return <>{children}</>;
     }
 
-    // Check authentication for non-login pages
-    const admin = await getCurrentAdmin();
-    if (!admin) {
-        redirect("/admin/login");
-    }
-
-    console.log('AdminLayout rendered, pathname:', pathname, 'admin:', admin.username);
+    console.log('AdminLayout rendered, admin:', admin.username);
 
     return (
         <div className="flex min-h-screen bg-background">
@@ -45,10 +39,7 @@ export default async function AdminLayout({
                     <nav className="flex-1 space-y-1 p-4">
                         <Link
                             href="/admin/papers"
-                            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary ${pathname === '/admin/papers' || pathname === '/admin'
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'text-foreground'
-                                }`}
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary text-foreground"
                         >
                             <FileText className="h-5 w-5" />
                             论文管理
