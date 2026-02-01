@@ -46,6 +46,12 @@ jobs:
           echo "🔄 Restarting application..."
           pm2 restart dabo-personal --update-env
           
+          echo "⏳ Waiting for application to stabilize..."
+          sleep 5
+          
+          echo "📋 Checking application logs for errors..."
+          pm2 logs dabo-personal --lines 30 --nostream
+          
           echo "✅ Deployment completed!"
           echo "📊 PM2 Status:"
           pm2 status
