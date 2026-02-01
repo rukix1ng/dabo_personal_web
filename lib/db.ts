@@ -19,6 +19,7 @@ export async function getConnection() {
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASSWORD || '',
             database: process.env.DB_NAME || 'personal_web',
+            connectTimeout: 5000, // 5 second timeout
         });
 
         return connection;
