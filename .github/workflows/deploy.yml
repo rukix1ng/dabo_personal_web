@@ -43,17 +43,34 @@ jobs:
           echo "🔨 Building project..."
           npm run build
           
+          echo "📁 Ensuring logs directory exists..."
+          mkdir -p logs
+          
           echo "🔄 Restarting application..."
           pm2 restart dabo-personal --update-env
           
           echo "⏳ Waiting for application to stabilize..."
           sleep 5
           
-          echo "📋 Checking application logs for errors..."
-          pm2 logs dabo-personal --lines 30 --nostream
+          echo "📋 Checking application status..."
+          pm2 status
+          
+          echo "📋 Checking error logs..."
+          if [ -f logs/err.log ]; then
+            echo "=== Last 30 lines of error log ==="
+            tail -n 30 logs/err.log
+          else
+            echo "No error log file found"
+          fi
+          
+          echo "📋 Checking output logs..."
+          if [ -f logs/out.log ]; then
+            echo "=== Last 20 lines of output log ==="
+            tail -n 20 logs/out.log
+          else
+            echo "No output log file found"
+          fi
           
           echo "✅ Deployment completed!"
-          echo "📊 PM2 Status:"
-          pm2 status
           echo "📝 Deployed commit:"
           git log -1 --oneline
