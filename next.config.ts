@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
     // 启用并行构建（如果支持）
     optimizePackageImports: ['lucide-react'],
   },
+  // 优化构建性能
+  typescript: {
+    // 构建时不进行类型检查（类型检查在开发时进行）
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    // 构建时不进行 ESLint 检查（检查在开发时进行）
+    ignoreDuringBuilds: false,
+  },
   // Note: swcMinify is enabled by default in Next.js 16, no need to specify
 };
 

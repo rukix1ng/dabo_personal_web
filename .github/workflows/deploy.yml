@@ -69,9 +69,22 @@ jobs:
           echo "🔨 Building project..."
           echo "Build started at $(date)"
           
+          # 检查服务器资源
+          echo "📊 服务器资源检查:"
+          echo "磁盘空间:"
+          df -h . | head -2 || true
+          echo "内存使用:"
+          free -h | head -2 || true
+          echo "CPU 信息:"
+          nproc || echo "无法获取 CPU 核心数"
+          echo ""
+          
           # 设置构建环境变量以优化性能
           export NODE_ENV=production
           export NEXT_TELEMETRY_DISABLED=1
+          
+          # 设置 Node.js 内存限制（如果服务器内存不足）
+          export NODE_OPTIONS="--max-old-space-size=2048"
           
           # 检查是否有旧的构建，如果有则清理缓存（但保留构建产物）
           if [ -d ".next" ]; then
@@ -80,12 +93,19 @@ jobs:
           fi
           
           echo "开始构建（预计 2-4 分钟）..."
-          timeout 600 npm run build 2>&1 | tee /tmp/build.log || {
-            echo "❌ Build failed"
-            echo "构建日志最后50行:"
-            tail -50 /tmp/build.log || echo "无法读取构建日志"
+          echo "构建进度会实时输出..."
+          
+          # 使用 unbuffered 输出确保实时显示
+          # 同时保存日志到文件
+          npm run build 2>&1 | stdbuf -oL -eL tee /tmp/build.log || {
+            BUILD_EXIT_CODE=$?
             echo ""
-            echo "Checking .next directory..."
+            echo "❌ Build failed with exit code: $BUILD_EXIT_CODE"
+            echo ""
+            echo "构建日志最后100行:"
+            tail -100 /tmp/build.log || echo "无法读取构建日志"
+            echo ""
+            echo "检查 .next 目录:"
             ls -la .next/ 2>/dev/null || echo ".next directory not found"
             echo ""
             echo "检查磁盘空间:"
@@ -93,6 +113,9 @@ jobs:
             echo ""
             echo "检查内存使用:"
             free -h || true
+            echo ""
+            echo "检查 Node.js 进程:"
+            ps aux | grep -E "node|next" | head -10 || true
             exit 1
           }
           
