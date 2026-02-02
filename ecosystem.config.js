@@ -1,8 +1,8 @@
 module.exports = {
     apps: [{
         name: 'dabo-personal',
-        // 使用 standalone 模式（如果存在），否则使用普通模式
-        script: 'node_modules/next/dist/bin/next',
+        // 使用 npm start 命令，更可靠
+        script: 'npm',
         args: 'start',
         cwd: '/var/www/dabo_personal',
         instances: 1,
