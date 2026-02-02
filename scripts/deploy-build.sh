@@ -10,6 +10,8 @@ SERVER_HOST="${SERVER_HOST:-47.110.87.81}"
 SERVER_USER="${SERVER_USER:-root}"
 SERVER_PATH="/var/www/dabo_personal"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
+# 非交互式模式（如果设置了 SKIP_CONFIRM=1，则跳过确认）
+SKIP_CONFIRM="${SKIP_CONFIRM:-0}"
 
 # 展开 SSH 密钥路径
 SSH_KEY_EXPANDED="${SSH_KEY/#\~/$HOME}"
@@ -39,12 +41,16 @@ echo "  目标路径: ${SERVER_PATH}"
 echo "  SSH 密钥: ${SSH_KEY_EXPANDED}"
 echo ""
 
-# 确认部署
-read -p "确认部署到服务器? (y/N): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "❌ 部署已取消"
-    exit 1
+# 确认部署（非交互式模式跳过）
+if [ "$SKIP_CONFIRM" != "1" ]; then
+    read -p "确认部署到服务器? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "❌ 部署已取消"
+        exit 1
+    fi
+else
+    echo "✅ 非交互式模式：自动确认部署"
 fi
 
 echo "📦 准备部署文件..."
@@ -55,6 +61,11 @@ echo "临时目录: ${TEMP_DIR}"
 # 复制必要的文件
 echo "复制文件..."
 if [ "$STANDALONE_MODE" = true ]; then
+    echo "📦 Copying lockfile for standalone mode..."
+    # Ensure parent directory exists (just in case)
+    mkdir -p .next/standalone
+    cp package-lock.json .next/standalone/
+
     echo "📦 使用 standalone 模式部署（只上传必要文件）..."
     # standalone 模式：只需要 standalone 目录、public、.env 和配置文件
     rsync -avz --progress \
