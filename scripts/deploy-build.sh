@@ -9,7 +9,10 @@ set -e
 SERVER_HOST="${SERVER_HOST:-47.110.87.81}"
 SERVER_USER="${SERVER_USER:-root}"
 SERVER_PATH="/var/www/dabo_personal"
-SSH_KEY="${SSH_KEY:-~/.ssh/id_rsa}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
+
+# 展开 SSH 密钥路径
+SSH_KEY_EXPANDED="${SSH_KEY/#\~/$HOME}"
 
 echo "🚀 开始部署构建产物到服务器..."
 echo ""
@@ -24,6 +27,7 @@ fi
 echo "📋 部署配置:"
 echo "  服务器: ${SERVER_USER}@${SERVER_HOST}"
 echo "  目标路径: ${SERVER_PATH}"
+echo "  SSH 密钥: ${SSH_KEY_EXPANDED}"
 echo ""
 
 # 确认部署
@@ -60,12 +64,40 @@ rsync -avz --progress \
 
 echo ""
 echo "📤 上传到服务器..."
-rsync -avz --progress -e "ssh -i ${SSH_KEY}" \
-    ${TEMP_DIR}/deploy/ ${SERVER_USER}@${SERVER_HOST}:${SERVER_PATH}/
+echo "开始时间: $(date)"
+
+# 展开 SSH 密钥路径（处理 ~ 符号）
+SSH_KEY_EXPANDED="${SSH_KEY/#\~/$HOME}"
+
+# 测试 SSH 连接
+echo "🔍 测试 SSH 连接..."
+if ! ssh -i "${SSH_KEY_EXPANDED}" -o ConnectTimeout=10 -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} "echo 'SSH连接成功'" 2>/dev/null; then
+    echo "❌ SSH 连接失败，请检查："
+    echo "   1. SSH 密钥路径: ${SSH_KEY_EXPANDED}"
+    echo "   2. 服务器地址: ${SERVER_HOST}"
+    echo "   3. 用户名: ${SERVER_USER}"
+    exit 1
+fi
+
+# 使用超时保护 rsync
+echo "开始上传文件..."
+if timeout 600 rsync -avz --progress --timeout=30 -e "ssh -i ${SSH_KEY_EXPANDED} -o StrictHostKeyChecking=no" \
+    ${TEMP_DIR}/deploy/ ${SERVER_USER}@${SERVER_HOST}:${SERVER_PATH}/; then
+    echo "✅ 文件上传完成"
+    echo "完成时间: $(date)"
+else
+    RSYNC_EXIT_CODE=$?
+    if [ $RSYNC_EXIT_CODE -eq 124 ]; then
+        echo "❌ 上传超时（超过10分钟）"
+    else
+        echo "❌ 上传失败，退出码: $RSYNC_EXIT_CODE"
+    fi
+    exit 1
+fi
 
 echo ""
 echo "🔄 在服务器上安装生产依赖并重启..."
-ssh -i ${SSH_KEY} ${SERVER_USER}@${SERVER_HOST} << EOF
+ssh -i "${SSH_KEY_EXPANDED}" -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} << EOF
 set -e
 cd ${SERVER_PATH}
 
