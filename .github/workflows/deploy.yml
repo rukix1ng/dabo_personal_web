@@ -56,16 +56,33 @@ jobs:
           echo "Node version: $(node --version)"
           echo "NPM version: $(npm --version)"
           
-          # Add timeout protection and fallback
-          timeout 300 npm ci --prefer-offline --no-audit || {
+          # 清理可能损坏的 node_modules
+          if [ -d "node_modules" ]; then
+            echo "清理旧的 node_modules..."
+            rm -rf node_modules
+          fi
+          
+          # 安装所有依赖（包括 devDependencies，因为构建需要）
+          timeout 600 npm ci --no-audit || {
             echo "⚠️  npm ci failed, trying npm install..."
-            timeout 300 npm install --prefer-offline --no-audit || {
+            timeout 600 npm install --no-audit || {
               echo "❌ npm install also failed"
+              echo "检查 package-lock.json..."
+              ls -la package-lock.json || echo "package-lock.json 不存在"
               exit 1
             }
           }
           
+          # 验证 Next.js 是否安装成功
+          if [ ! -f "node_modules/next/dist/bin/next" ]; then
+            echo "❌ Next.js 未正确安装"
+            echo "检查 node_modules/next:"
+            ls -la node_modules/next/ 2>/dev/null || echo "node_modules/next 不存在"
+            exit 1
+          fi
+          
           echo "✅ Dependencies installed"
+          echo "验证 Next.js: $(node_modules/next/dist/bin/next --version 2>&1 || echo '无法获取版本')"
           
           echo "🔨 Building project..."
           echo "Build started at $(date)"
@@ -105,9 +122,10 @@ jobs:
           ) &
           HEARTBEAT_PID=$!
           
+          # 使用 npx 或完整路径确保能找到 next 命令
           # 使用 unbuffered 输出确保实时显示
           # 同时保存日志到文件
-          npm run build 2>&1 | stdbuf -oL -eL tee /tmp/build.log || {
+          npx next build 2>&1 | stdbuf -oL -eL tee /tmp/build.log || {
             # 构建失败时停止心跳
             kill $HEARTBEAT_PID 2>/dev/null || true
             BUILD_EXIT_CODE=$?
@@ -140,13 +158,17 @@ jobs:
           mkdir -p logs || { echo "⚠️  Could not create logs directory"; }
           
           echo "🔄 Restarting application..."
-          pm2 restart dabo-personal --update-env || {
-            echo "⚠️  pm2 restart failed, trying pm2 start..."
-            pm2 start ecosystem.config.js || {
-              echo "❌ pm2 start also failed"
-              pm2 list
-              exit 1
-            }
+          # 先停止并删除旧进程（如果存在）
+          pm2 delete dabo-personal 2>/dev/null || true
+          sleep 2
+          # 启动新进程
+          pm2 start ecosystem.config.js || {
+            echo "❌ pm2 start failed"
+            echo "检查 PM2 状态:"
+            pm2 list
+            echo "检查应用日志:"
+            pm2 logs dabo-personal --lines 20 --nostream 2>/dev/null || true
+            exit 1
           }
           
           echo "⏳ Waiting for application to stabilize..."

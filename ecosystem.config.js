@@ -1,8 +1,8 @@
 module.exports = {
     apps: [{
         name: 'dabo-personal',
-        // 使用 npm start 命令，更可靠
-        script: 'npm',
+        // 使用 node 直接运行 next start，更可靠
+        script: 'node_modules/next/dist/bin/next',
         args: 'start',
         cwd: '/var/www/dabo_personal',
         instances: 1,
@@ -14,6 +14,8 @@ module.exports = {
         max_restarts: 10, // 最多重启10次，避免无限重启
         restart_delay: 4000, // 重启延迟4秒
         kill_timeout: 5000, // 5秒超时
+        wait_ready: true, // 等待应用就绪
+        listen_timeout: 10000, // 10秒超时
         env: {
             NODE_ENV: 'production',
             PORT: 3000,
@@ -25,7 +27,6 @@ module.exports = {
         out_file: './logs/out.log',
         log_file: './logs/combined.log',
         time: true,
-        // 添加启动前检查
-        pre_start: 'echo "Starting application..."',
+        merge_logs: true, // 合并日志
     }]
 }
