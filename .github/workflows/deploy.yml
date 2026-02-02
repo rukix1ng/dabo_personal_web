@@ -23,45 +23,81 @@ jobs:
         command_timeout: 20m
         script: |
           set -e  # Exit on error
+          set -x  # Enable debug output
           
-          cd /var/www/dabo_personal
+          echo "🚀 Starting deployment at $(date)"
+          
+          cd /var/www/dabo_personal || { echo "❌ Failed to cd to /var/www/dabo_personal"; exit 1; }
           
           echo "📦 Pulling latest code..."
-          git fetch origin main
-          git reset --hard origin/main
-          git clean -fd
+          git fetch origin main || { echo "❌ Git fetch failed"; exit 1; }
+          git reset --hard origin/main || { echo "❌ Git reset failed"; exit 1; }
+          git clean -fd || { echo "⚠️  Git clean had issues but continuing..."; }
           
           echo "📋 Current commit:"
-          git log -1 --oneline
+          git log -1 --oneline || { echo "⚠️  Could not show commit"; }
           
           echo "🔧 Ensuring environment variables..."
           if [ ! -f .env.local ]; then
-            cp .env.production .env.local
+            if [ -f .env.production ]; then
+              cp .env.production .env.local
+              echo "✅ Copied .env.production to .env.local"
+            else
+              echo "⚠️  .env.production not found, .env.local may be missing"
+            fi
+          else
+            echo "✅ .env.local already exists"
           fi
           
           echo "📥 Installing dependencies..."
+          echo "Current directory: $(pwd)"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          
           # Add timeout protection and fallback
           timeout 300 npm ci --prefer-offline --no-audit || {
             echo "⚠️  npm ci failed, trying npm install..."
-            timeout 300 npm install --prefer-offline --no-audit
+            timeout 300 npm install --prefer-offline --no-audit || {
+              echo "❌ npm install also failed"
+              exit 1
+            }
           }
           
+          echo "✅ Dependencies installed"
+          
           echo "🔨 Building project..."
+          echo "Build started at $(date)"
           # Use incremental builds - don't delete .next
-          timeout 600 npm run build
+          timeout 600 npm run build || {
+            echo "❌ Build failed"
+            echo "Checking .next directory..."
+            ls -la .next/ 2>/dev/null || echo ".next directory not found"
+            exit 1
+          }
+          
+          echo "✅ Build completed at $(date)"
           
           echo "📁 Ensuring logs directory exists..."
-          mkdir -p logs
+          mkdir -p logs || { echo "⚠️  Could not create logs directory"; }
           
           echo "🔄 Restarting application..."
-          pm2 restart dabo-personal --update-env || pm2 start ecosystem.config.js
+          pm2 restart dabo-personal --update-env || {
+            echo "⚠️  pm2 restart failed, trying pm2 start..."
+            pm2 start ecosystem.config.js || {
+              echo "❌ pm2 start also failed"
+              pm2 list
+              exit 1
+            }
+          }
           
           echo "⏳ Waiting for application to stabilize..."
           sleep 3
           
-          echo "✅ Deployment completed!"
+          echo "✅ Deployment completed at $(date)!"
           echo "📋 Application status:"
-          pm2 status dabo-personal
+          pm2 status dabo-personal || pm2 list
           
           echo "📝 Deployed commit:"
-          git log -1 --oneline
+          git log -1 --oneline || echo "Could not show commit"
+          
+          echo "🎉 Deployment finished successfully!"
