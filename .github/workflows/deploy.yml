@@ -113,19 +113,35 @@ jobs:
           echo "开始构建（预计 2-4 分钟）..."
           echo "构建进度会实时输出..."
           
-          # 添加心跳机制，每30秒输出一次，防止 SSH 连接超时
+          # 添加更频繁的心跳机制，每15秒输出一次
           (
+            COUNTER=0
             while true; do
-              sleep 30
-              echo "⏳ 构建进行中... $(date)"
+              sleep 15
+              COUNTER=$((COUNTER + 1))
+              echo "⏳ [构建进度] 已运行 $((COUNTER * 15)) 秒... $(date +%H:%M:%S)"
+              # 每60秒检查一次构建进程是否还在运行
+              if [ $((COUNTER % 4)) -eq 0 ]; then
+                if pgrep -f "next build" > /dev/null; then
+                  echo "✅ 构建进程正在运行中..."
+                else
+                  echo "⚠️  未检测到构建进程，可能已完成或失败"
+                fi
+              fi
             done
           ) &
           HEARTBEAT_PID=$!
           
+          # 启用 Next.js 详细输出
+          export NEXT_BUILD_VERBOSE=1
+          
           # 使用 npx 或完整路径确保能找到 next 命令
           # 使用 unbuffered 输出确保实时显示
           # 同时保存日志到文件
-          npx next build 2>&1 | stdbuf -oL -eL tee /tmp/build.log || {
+          # 添加时间戳到输出
+          npx next build 2>&1 | while IFS= read -r line; do
+            echo "[$(date +%H:%M:%S)] $line"
+          done | stdbuf -oL -eL tee /tmp/build.log || {
             # 构建失败时停止心跳
             kill $HEARTBEAT_PID 2>/dev/null || true
             BUILD_EXIT_CODE=$?
@@ -152,7 +168,13 @@ jobs:
           # 构建成功，停止心跳
           kill $HEARTBEAT_PID 2>/dev/null || true
           
+          echo ""
           echo "✅ Build completed at $(date)"
+          echo "📊 构建统计:"
+          if [ -d ".next" ]; then
+            echo "  - .next 目录大小: $(du -sh .next 2>/dev/null | cut -f1 || echo '未知')"
+            echo "  - 构建文件数量: $(find .next -type f 2>/dev/null | wc -l || echo '0')"
+          fi
           
           echo "📁 Ensuring logs directory exists..."
           mkdir -p logs || { echo "⚠️  Could not create logs directory"; }
