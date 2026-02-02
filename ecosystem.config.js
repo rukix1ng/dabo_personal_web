@@ -1,9 +1,18 @@
+// 检测是否使用 standalone 模式
+const fs = require('fs');
+const path = require('path');
+
+const isStandalone = fs.existsSync(path.join(__dirname, '.next/standalone/server.js'));
+
 module.exports = {
     apps: [{
         name: 'dabo-personal',
-        // 使用 node 直接运行 next start，更可靠
-        script: 'node_modules/next/dist/bin/next',
-        args: 'start',
+        // standalone 模式：使用 standalone/server.js
+        // 标准模式：使用 node_modules/next/dist/bin/next
+        script: isStandalone 
+            ? '.next/standalone/server.js'
+            : 'node_modules/next/dist/bin/next',
+        args: isStandalone ? '' : 'start',
         cwd: '/var/www/dabo_personal',
         instances: 1,
         exec_mode: 'fork', // 使用 fork 模式而不是 cluster（单实例）

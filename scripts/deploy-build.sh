@@ -24,6 +24,15 @@ if [ ! -d ".next" ]; then
     exit 1
 fi
 
+# 检查 standalone 目录（如果配置了 output: 'standalone'）
+if [ -d ".next/standalone" ]; then
+    echo "✅ 检测到 standalone 构建模式"
+    STANDALONE_MODE=true
+else
+    echo "ℹ️  使用标准构建模式"
+    STANDALONE_MODE=false
+fi
+
 echo "📋 部署配置:"
 echo "  服务器: ${SERVER_USER}@${SERVER_HOST}"
 echo "  目标路径: ${SERVER_PATH}"
@@ -45,22 +54,42 @@ echo "临时目录: ${TEMP_DIR}"
 
 # 复制必要的文件
 echo "复制文件..."
-rsync -avz --progress \
-    --exclude 'node_modules' \
-    --exclude '.git' \
-    --exclude '.next/cache' \
-    --include '.next' \
-    --include 'package.json' \
-    --include 'package-lock.json' \
-    --include 'next.config.ts' \
-    --include 'ecosystem.config.js' \
-    --include 'public' \
-    --include 'app' \
-    --include 'components' \
-    --include 'lib' \
-    --include 'types' \
-    --include '.env.production' \
-    ./ ${TEMP_DIR}/deploy/
+if [ "$STANDALONE_MODE" = true ]; then
+    echo "📦 使用 standalone 模式部署（只上传必要文件）..."
+    # standalone 模式：只需要 standalone 目录、public、.env 和配置文件
+    rsync -avz --progress \
+        --exclude 'node_modules' \
+        --exclude '.git' \
+        --exclude '.next/cache' \
+        --include '.next/standalone' \
+        --include '.next/static' \
+        --include 'public' \
+        --include 'package.json' \
+        --include 'package-lock.json' \
+        --include 'next.config.ts' \
+        --include 'ecosystem.config.js' \
+        --include '.env.production' \
+        ./ ${TEMP_DIR}/deploy/
+else
+    echo "📦 使用标准模式部署..."
+    # 标准模式：上传所有必要文件
+    rsync -avz --progress \
+        --exclude 'node_modules' \
+        --exclude '.git' \
+        --exclude '.next/cache' \
+        --include '.next' \
+        --include 'package.json' \
+        --include 'package-lock.json' \
+        --include 'next.config.ts' \
+        --include 'ecosystem.config.js' \
+        --include 'public' \
+        --include 'app' \
+        --include 'components' \
+        --include 'lib' \
+        --include 'types' \
+        --include '.env.production' \
+        ./ ${TEMP_DIR}/deploy/
+fi
 
 echo ""
 echo "📤 上传到服务器..."
@@ -96,28 +125,70 @@ else
 fi
 
 echo ""
-echo "🔄 在服务器上安装生产依赖并重启..."
-ssh -i "${SSH_KEY_EXPANDED}" -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} << EOF
+echo "🔄 在服务器上配置并重启应用..."
+ssh -i "${SSH_KEY_EXPANDED}" -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} << 'SERVER_SCRIPT'
 set -e
-cd ${SERVER_PATH}
+cd /var/www/dabo_personal
 
-echo "📥 安装生产依赖..."
-npm ci --production --prefer-offline --no-audit || npm install --production --prefer-offline --no-audit
+echo "📋 检查部署文件..."
+if [ -d ".next/standalone" ]; then
+    echo "✅ 检测到 standalone 模式"
+    STANDALONE_MODE=true
+else
+    echo "ℹ️  使用标准模式"
+    STANDALONE_MODE=false
+fi
+
+if [ "$STANDALONE_MODE" = true ]; then
+    echo "📦 配置 standalone 模式..."
+    # standalone 模式：只需要安装 standalone 目录中的依赖
+    if [ -f ".next/standalone/package.json" ]; then
+        echo "📥 安装 standalone 依赖..."
+        cd .next/standalone
+        npm ci --production --prefer-offline --no-audit || npm install --production --prefer-offline --no-audit
+        cd ../..
+    fi
+else
+    echo "📥 安装生产依赖..."
+    npm ci --production --prefer-offline --no-audit || npm install --production --prefer-offline --no-audit
+fi
+
+echo "🔧 确保环境变量..."
+if [ ! -f .env.local ]; then
+    if [ -f .env.production ]; then
+        cp .env.production .env.local
+        echo "✅ 已创建 .env.local"
+    fi
+fi
 
 echo "📁 确保日志目录存在..."
 mkdir -p logs
 
 echo "🔄 重启应用..."
-pm2 restart dabo-personal --update-env || pm2 start ecosystem.config.js
+pm2 delete dabo-personal 2>/dev/null || true
+sleep 2
+pm2 start ecosystem.config.js || {
+    echo "❌ PM2 启动失败"
+    pm2 list
+    exit 1
+}
 
 echo "⏳ 等待应用稳定..."
-sleep 3
+sleep 5
 
 echo "📋 应用状态:"
 pm2 status dabo-personal || pm2 list
 
+echo "📊 检查应用是否正常运行..."
+if pm2 list | grep -q "dabo-personal.*online"; then
+    echo "✅ 应用运行正常"
+else
+    echo "⚠️  应用可能未正常启动，查看日志:"
+    pm2 logs dabo-personal --lines 20 --nostream || true
+fi
+
 echo "✅ 部署完成！"
-EOF
+SERVER_SCRIPT
 
 # 清理临时目录
 rm -rf ${TEMP_DIR}
