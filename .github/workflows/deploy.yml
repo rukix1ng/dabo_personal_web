@@ -21,6 +21,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         command_timeout: 20m
+        timeout: 1200s  # 20分钟，以秒为单位
         script: |
           set -e  # Exit on error
           set -x  # Enable debug output
@@ -95,9 +96,20 @@ jobs:
           echo "开始构建（预计 2-4 分钟）..."
           echo "构建进度会实时输出..."
           
+          # 添加心跳机制，每30秒输出一次，防止 SSH 连接超时
+          (
+            while true; do
+              sleep 30
+              echo "⏳ 构建进行中... $(date)"
+            done
+          ) &
+          HEARTBEAT_PID=$!
+          
           # 使用 unbuffered 输出确保实时显示
           # 同时保存日志到文件
           npm run build 2>&1 | stdbuf -oL -eL tee /tmp/build.log || {
+            # 构建失败时停止心跳
+            kill $HEARTBEAT_PID 2>/dev/null || true
             BUILD_EXIT_CODE=$?
             echo ""
             echo "❌ Build failed with exit code: $BUILD_EXIT_CODE"
@@ -118,6 +130,9 @@ jobs:
             ps aux | grep -E "node|next" | head -10 || true
             exit 1
           }
+          
+          # 构建成功，停止心跳
+          kill $HEARTBEAT_PID 2>/dev/null || true
           
           echo "✅ Build completed at $(date)"
           
