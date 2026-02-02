@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: t.meta.title,
     description: t.meta.description,
-    keywords: t.meta.keywords,
+    keywords: [...t.meta.keywords],
     alternates: {
       canonical: `/${locale}`,
       languages: {
