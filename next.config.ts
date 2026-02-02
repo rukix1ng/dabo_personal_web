@@ -22,10 +22,8 @@ const nextConfig: NextConfig = {
     // 构建时不进行类型检查（类型检查在开发时进行）
     ignoreBuildErrors: false,
   },
-  eslint: {
-    // 构建时不进行 ESLint 检查（检查在开发时进行）
-    ignoreDuringBuilds: false,
-  },
+  // Note: ESLint 配置已移除，Next.js 16 不再支持在 next.config.ts 中配置 ESLint
+  // ESLint 检查通过 'next lint' 命令或 IDE 插件进行
   // Note: swcMinify is enabled by default in Next.js 16, no need to specify
 };
 
