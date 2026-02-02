@@ -1,43 +1,39 @@
 import mysql from 'mysql2/promise';
 
-let connection: mysql.Connection | null = null;
+// Create a connection pool instead of a single connection
+// This handles reconnection automatically and allows multiple concurrent queries
+const pool = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '3306'),
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'personal_web',
+    waitForConnections: true,
+    connectionLimit: 10, // Max 10 concurrent connections
+    queueLimit: 0, // Unlimited queue
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0,
+});
 
+// Helper to get a connection from the pool if needed explicitly
+// Usually not needed as pool.execute handles it
 export async function getConnection() {
-    if (connection) {
-        try {
-            await connection.ping();
-            return connection;
-        } catch (error) {
-            connection = null;
-        }
-    }
+    return pool.getConnection();
+}
 
+export async function query<T = any>(sql: string, params?: any[]): Promise<T[]> {
     try {
-        connection = await mysql.createConnection({
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '3306'),
-            user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || '',
-            database: process.env.DB_NAME || 'personal_web',
-            connectTimeout: 5000, // 5 second timeout
-        });
-
-        return connection;
+        // pool.execute will automatically get a connection from the pool,
+        // execute the query, and release the connection back to the pool.
+        const [rows] = await pool.execute(sql, params);
+        return rows as T[];
     } catch (error) {
-        console.error('Database connection error:', error);
+        console.error('Database query error:', error);
         throw error;
     }
 }
 
-export async function query<T = any>(sql: string, params?: any[]): Promise<T[]> {
-    const conn = await getConnection();
-    const [rows] = await conn.execute(sql, params);
-    return rows as T[];
-}
-
+// Gracefully close the pool when the app shuts down
 export async function closeConnection() {
-    if (connection) {
-        await connection.end();
-        connection = null;
-    }
+    await pool.end();
 }
