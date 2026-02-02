@@ -32,7 +32,8 @@ jobs:
           echo "📦 Pulling latest code..."
           git fetch origin main || { echo "❌ Git fetch failed"; exit 1; }
           git reset --hard origin/main || { echo "❌ Git reset failed"; exit 1; }
-          git clean -fd || { echo "⚠️  Git clean had issues but continuing..."; }
+          # 只清理未跟踪的文件，保留 .next 目录以加速构建
+          git clean -fd --exclude='.next' || { echo "⚠️  Git clean had issues but continuing..."; }
           
           echo "📋 Current commit:"
           git log -1 --oneline || { echo "⚠️  Could not show commit"; }
@@ -68,18 +69,30 @@ jobs:
           echo "🔨 Building project..."
           echo "Build started at $(date)"
           
-          # 清理旧的构建缓存（可选，如果构建有问题）
-          # rm -rf .next/cache
-          
-          # 使用增量构建 - 保留 .next 目录以加速后续构建
           # 设置构建环境变量以优化性能
           export NODE_ENV=production
           export NEXT_TELEMETRY_DISABLED=1
           
-          timeout 600 npm run build || {
+          # 检查是否有旧的构建，如果有则清理缓存（但保留构建产物）
+          if [ -d ".next" ]; then
+            echo "清理构建缓存以加速构建..."
+            rm -rf .next/cache 2>/dev/null || true
+          fi
+          
+          echo "开始构建（预计 2-4 分钟）..."
+          timeout 600 npm run build 2>&1 | tee /tmp/build.log || {
             echo "❌ Build failed"
+            echo "构建日志最后50行:"
+            tail -50 /tmp/build.log || echo "无法读取构建日志"
+            echo ""
             echo "Checking .next directory..."
             ls -la .next/ 2>/dev/null || echo ".next directory not found"
+            echo ""
+            echo "检查磁盘空间:"
+            df -h . || true
+            echo ""
+            echo "检查内存使用:"
+            free -h || true
             exit 1
           }
           
