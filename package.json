@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:local": "bash scripts/build-local.sh",
+    "deploy:build": "bash scripts/deploy-build.sh",
+    "deploy:full": "bash scripts/deploy-full.sh"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
