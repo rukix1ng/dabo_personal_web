@@ -9,18 +9,25 @@ type PageProps = {
     params: Promise<{ locale: Locale; id: string }>;
 };
 
-export async function generateStaticParams() {
-    const forumIds = ["forum-1", "forum-2", "forum-3", "forum-4", "forum-5", "forum-6"];
-    const params: Array<{ locale: Locale; id: string }> = [];
-    
-    for (const locale of locales) {
-        for (const id of forumIds) {
-            params.push({ locale, id });
-        }
-    }
-    
-    return params;
-}
+// 使用动态渲染而不是静态生成，因为论坛数据是 mock 的
+// 这样可以大大减少构建时间（从 18 个静态页面减少到动态渲染）
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
+// 不再使用 generateStaticParams，改为动态渲染
+// 如果需要静态生成，可以取消下面的注释
+// export async function generateStaticParams() {
+//     const forumIds = ["forum-1", "forum-2", "forum-3", "forum-4", "forum-5", "forum-6"];
+//     const params: Array<{ locale: Locale; id: string }> = [];
+//     
+//     for (const locale of locales) {
+//         for (const id of forumIds) {
+//             params.push({ locale, id });
+//         }
+//     }
+//     
+//     return params;
+// }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { locale: localeParam, id } = await params;

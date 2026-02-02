@@ -67,7 +67,15 @@ jobs:
           
           echo "🔨 Building project..."
           echo "Build started at $(date)"
-          # Use incremental builds - don't delete .next
+          
+          # 清理旧的构建缓存（可选，如果构建有问题）
+          # rm -rf .next/cache
+          
+          # 使用增量构建 - 保留 .next 目录以加速后续构建
+          # 设置构建环境变量以优化性能
+          export NODE_ENV=production
+          export NEXT_TELEMETRY_DISABLED=1
+          
           timeout 600 npm run build || {
             echo "❌ Build failed"
             echo "Checking .next directory..."

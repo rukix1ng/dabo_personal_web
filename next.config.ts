@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
   },
   // Enable compression for better performance
   compress: true,
+  // Optimize build performance
+  experimental: {
+    // 启用并行构建（如果支持）
+    optimizePackageImports: ['lucide-react'],
+  },
   // Note: swcMinify is enabled by default in Next.js 16, no need to specify
 };
 
