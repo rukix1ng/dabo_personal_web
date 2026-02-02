@@ -1,19 +1,100 @@
-import { content, type Locale } from "@/lib/i18n";
+import { content, type Locale, locales } from "@/lib/i18n";
 import { Award } from "lucide-react";
 import { MediaImage } from "@/components/media-image";
 import { MediaCarousel } from "@/components/media-carousel";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ locale: Locale }>;
 };
+
+export async function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale: localeParam } = await params;
+  const locale = localeParam in content ? localeParam : "en";
+  const t = content[locale];
+
+  return {
+    title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
+    description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+    keywords: [...t.meta.keywords, "achievements", "awards", "media coverage", "research achievements"],
+    alternates: {
+      canonical: `/${locale}/achievements`,
+      languages: {
+        en: "/en/achievements",
+        zh: "/zh/achievements",
+        ja: "/ja/achievements",
+      },
+    },
+    openGraph: {
+      title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
+      description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+      type: "website",
+      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
+      url: `/${locale}/achievements`,
+    },
+    twitter: {
+      card: "summary",
+      title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
+      description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+    },
+  };
+}
 
 export default async function AchievementsPage({ params }: PageProps) {
   const { locale: localeParam } = await params;
   const locale = localeParam in content ? localeParam : "en";
   const t = content[locale];
 
+  // Generate JSON-LD structured data
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: t.achievements.mediaReports.title,
+    description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+    url: `${baseUrl}/${locale}/achievements`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: t.achievements.awards.items.length + t.achievements.mediaReports.items.length,
+      itemListElement: [
+        ...t.achievements.mediaReports.items.map((item: any, index: number) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "NewsArticle",
+            headline: item.title,
+            description: item.content,
+            datePublished: item.date,
+            publisher: {
+              "@type": "Organization",
+              name: item.journals?.join(", ") || "Media",
+            },
+          },
+        })),
+        ...t.achievements.awards.items.map((item, index) => ({
+          "@type": "ListItem",
+          position: t.achievements.mediaReports.items.length + index + 1,
+          item: {
+            "@type": "Award",
+            name: item.name,
+            dateReceived: item.year,
+          },
+        })),
+      ],
+    },
+  };
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
       {/* Media Reports Section */}
       <section className="flex flex-col gap-6">
         {/* Section Title with Primary Color Bar */}
@@ -131,5 +212,6 @@ export default async function AchievementsPage({ params }: PageProps) {
         </div>
       </section>
     </main>
+    </>
   );
 }

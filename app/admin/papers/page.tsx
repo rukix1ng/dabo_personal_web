@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, X, Save } from "lucide-react";
 import type { Publication } from "@/types/database";
 
@@ -13,6 +14,7 @@ interface PaperFormData {
 }
 
 export default function PapersManagementPage() {
+    const router = useRouter();
     const [papers, setPapers] = useState<Publication[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -41,7 +43,9 @@ export default function PapersManagementPage() {
             const res = await fetch(`/api/admin/papers?page=${currentPage}`);
             if (!res.ok) {
                 if (res.status === 401) {
-                    setError("未授权访问，请重新登录");
+                    // 未授权，自动跳转到登录页面
+                    router.push("/admin/login");
+                    return;
                 } else {
                     setError("获取论文失败");
                 }
@@ -93,6 +97,12 @@ export default function PapersManagementPage() {
                 body: JSON.stringify(payload),
             });
 
+            if (res.status === 401) {
+                // 未授权，自动跳转到登录页面
+                router.push("/admin/login");
+                return;
+            }
+
             if (res.ok) {
                 await fetchPapers();
                 resetForm();
@@ -110,6 +120,12 @@ export default function PapersManagementPage() {
             const res = await fetch(`/api/admin/papers/${id}`, {
                 method: "DELETE",
             });
+
+            if (res.status === 401) {
+                // 未授权，自动跳转到登录页面
+                router.push("/admin/login");
+                return;
+            }
 
             if (res.ok) {
                 await fetchPapers();

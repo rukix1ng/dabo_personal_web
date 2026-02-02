@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/auth";
 import { FileText, MessageSquare, Home } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export default async function AdminLayout({
     children,
@@ -10,13 +11,19 @@ export default async function AdminLayout({
 }) {
     // Check authentication
     const admin = await getCurrentAdmin();
+    const headersList = await headers();
+    const pathname = headersList.get("x-pathname") || "";
+
+    // Check if we're on the login page
+    const isLoginPage = pathname === "/admin/login" || pathname.startsWith("/admin/login");
 
     // If no admin and not on login page, redirect to login
-    // We can't reliably detect the current path in layout, so we'll let
-    // the login page render without the admin layout
+    if (!admin && !isLoginPage) {
+        redirect("/admin/login");
+    }
+
+    // If no admin, return children without layout for login page
     if (!admin) {
-        // Return children without layout for login page
-        // The login page is a client component that will handle its own layout
         return <>{children}</>;
     }
 
@@ -39,8 +46,15 @@ export default async function AdminLayout({
                     <nav className="flex-1 space-y-1 p-4">
                         <Link
                             href="/admin/papers"
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary text-foreground"
+                            className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                                pathname === "/admin/papers" || pathname.startsWith("/admin/papers")
+                                    ? "bg-primary/10 text-primary"
+                                    : "text-foreground hover:bg-primary/10 hover:text-primary"
+                            }`}
                         >
+                            {(pathname === "/admin/papers" || pathname.startsWith("/admin/papers")) && (
+                                <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                            )}
                             <FileText className="h-5 w-5" />
                             论文管理
                         </Link>

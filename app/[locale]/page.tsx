@@ -1,11 +1,48 @@
-import { content, type Locale } from "@/lib/i18n";
+import { content, type Locale, locales } from "@/lib/i18n";
 import { AvatarImage } from "@/components/avatar-image";
 import { FormattedText } from "@/components/formatted-text";
 import { Phone, Mail, MapPin } from "lucide-react";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale: localeParam } = await params;
+  const locale = (localeParam in content ? localeParam : "en") as Locale;
+  const t = content[locale];
+
+  return {
+    title: t.meta.title,
+    description: t.meta.description,
+    keywords: t.meta.keywords,
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        en: "/en",
+        zh: "/zh",
+        ja: "/ja",
+      },
+    },
+    openGraph: {
+      title: t.meta.title,
+      description: t.meta.description,
+      type: "profile",
+      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
+      url: `/${locale}`,
+    },
+    twitter: {
+      card: "summary",
+      title: t.meta.title,
+      description: t.meta.description,
+    },
+  };
+}
 
 
 export default async function LocaleHome({ params }: PageProps) {

@@ -1,9 +1,46 @@
-import { content, type Locale } from "@/lib/i18n";
+import { content, type Locale, locales } from "@/lib/i18n";
 import { ForumCard } from "@/components/forum-card";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ locale: Locale }>;
 };
+
+export async function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale: localeParam } = await params;
+  const locale = localeParam in content ? localeParam : "en";
+  const t = content[locale];
+
+  return {
+    title: `${t.forum.title} | ${t.meta.title}`,
+    description: `${t.forum.title} - ${t.meta.description}`,
+    keywords: [...t.meta.keywords, "forum", "academic forum", "research forum", "NIMS", "LAM"],
+    alternates: {
+      canonical: `/${locale}/forum`,
+      languages: {
+        en: "/en/forum",
+        zh: "/zh/forum",
+        ja: "/ja/forum",
+      },
+    },
+    openGraph: {
+      title: `${t.forum.title} | ${t.meta.title}`,
+      description: `${t.forum.title} - ${t.meta.description}`,
+      type: "website",
+      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
+      url: `/${locale}/forum`,
+    },
+    twitter: {
+      card: "summary",
+      title: `${t.forum.title} | ${t.meta.title}`,
+      description: `${t.forum.title} - ${t.meta.description}`,
+    },
+  };
+}
 
 interface Forum {
   id: string;
@@ -85,8 +122,46 @@ export default async function ForumPage({ params }: PageProps) {
   const locale = localeParam in content ? localeParam : "en";
   const t = content[locale];
 
+  // Generate JSON-LD structured data
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: t.forum.title,
+    description: `${t.forum.title} - ${t.meta.description}`,
+    url: `${baseUrl}/${locale}/forum`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: mockForums.length,
+      itemListElement: mockForums.map((forum, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Event",
+          name: forum.title,
+          description: forum.description,
+          startDate: forum.date,
+          organizer: {
+            "@type": "Person",
+            name: forum.host,
+          },
+          performer: forum.speaker.split(", ").map((speaker) => ({
+            "@type": "Person",
+            name: speaker.trim(),
+          })),
+          url: `${baseUrl}/${locale}/forum/${forum.id}`,
+        },
+      })),
+    },
+  };
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
       {/* Header with blue bar */}
       <div className="flex items-center gap-3">
         <div className="w-1 h-6 bg-primary" />
@@ -112,5 +187,6 @@ export default async function ForumPage({ params }: PageProps) {
         ))}
       </div>
     </main>
+    </>
   );
 }

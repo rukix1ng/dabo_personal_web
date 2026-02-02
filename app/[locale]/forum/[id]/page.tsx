@@ -1,12 +1,67 @@
-import { content, type Locale } from "@/lib/i18n";
+import { content, type Locale, locales } from "@/lib/i18n";
 import { BilibiliPlayer } from "@/components/bilibili-player";
 import { Calendar, User, Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 type PageProps = {
     params: Promise<{ locale: Locale; id: string }>;
 };
+
+export async function generateStaticParams() {
+    const forumIds = ["forum-1", "forum-2", "forum-3", "forum-4", "forum-5", "forum-6"];
+    const params: Array<{ locale: Locale; id: string }> = [];
+    
+    for (const locale of locales) {
+        for (const id of forumIds) {
+            params.push({ locale, id });
+        }
+    }
+    
+    return params;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { locale: localeParam, id } = await params;
+    const locale = localeParam in content ? localeParam : "en";
+    const t = content[locale];
+
+    // Find the forum by ID
+    const forum = mockForums.find((f) => f.id === id);
+
+    if (!forum) {
+        return {
+            title: `${t.forum.title} | ${t.meta.title}`,
+        };
+    }
+
+    return {
+        title: `${forum.title} | ${t.forum.title} | ${t.meta.title}`,
+        description: forum.description,
+        keywords: [...t.meta.keywords, "forum", "academic forum", "research forum", forum.title],
+        alternates: {
+            canonical: `/${locale}/forum/${id}`,
+            languages: {
+                en: `/en/forum/${id}`,
+                zh: `/zh/forum/${id}`,
+                ja: `/ja/forum/${id}`,
+            },
+        },
+        openGraph: {
+            title: `${forum.title} | ${t.forum.title}`,
+            description: forum.description,
+            type: "video.other",
+            locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
+            url: `/${locale}/forum/${id}`,
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${forum.title} | ${t.forum.title}`,
+            description: forum.description,
+        },
+    };
+}
 
 interface Forum {
     id: string;
@@ -96,8 +151,38 @@ export default async function ForumDetailPage({ params }: PageProps) {
         notFound();
     }
 
+    // Generate JSON-LD structured data
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        name: forum.title,
+        description: forum.description,
+        startDate: forum.date,
+        organizer: {
+            "@type": "Person",
+            name: forum.host,
+        },
+        performer: forum.speaker.split(", ").map((speaker) => ({
+            "@type": "Person",
+            name: speaker.trim(),
+        })),
+        url: `${baseUrl}/${locale}/forum/${forum.id}`,
+        video: {
+            "@type": "VideoObject",
+            name: forum.title,
+            description: forum.description,
+            thumbnailUrl: `${baseUrl}${forum.image}`,
+        },
+    };
+
     return (
-        <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
             {/* Back to list link */}
             <Link
                 href={`/${locale}/forum`}
@@ -151,5 +236,6 @@ export default async function ForumDetailPage({ params }: PageProps) {
                 </div>
             </div>
         </main>
+        </>
     );
 }
