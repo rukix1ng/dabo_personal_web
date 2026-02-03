@@ -6,208 +6,92 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # Overall job timeout protection
-    
+    timeout-minutes: 20
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Deploy to Server via SSH
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install Dependencies (Local)
+      run: npm ci
+
+    - name: Build Project
+      run: |
+        npm run build
+      env:
+        NEXT_TELEMETRY_DISABLED: 1
+
+    - name: Prepare Standalone Artifacts
+      run: |
+        echo "📦 Preparing standalone folder..."
+        
+        # 1. Copy package-lock.json (Correct dependency versions)
+        cp package-lock.json .next/standalone/
+        
+        # 2. Copy static assets (Crucial for styles/images)
+        mkdir -p .next/standalone/.next/static
+        cp -r .next/static .next/standalone/.next/
+        
+        # 3. Copy public folder
+        cp -r public .next/standalone/
+
+        # 4. Remove node_modules (We will install Linux-compatible deps on server)
+        # This drastically reduces zip size and uploads speed
+        rm -rf .next/standalone/node_modules
+        
+        echo "✅ Standalone folder prepared."
+
+    - name: Create Deployment Archive
+      run: |
+        # Zip the standalone folder and other root configs
+        zip -r deploy.zip .next/standalone ecosystem.config.js package.json
+        
+        # Include .env.production if it exists in the repo (or create it from secrets if preferred)
+        if [ -f .env.production ]; then
+          zip -u deploy.zip .env.production
+        fi
+        
+        echo "📦 Zip created:"
+        ls -lh deploy.zip
+
+    - name: Upload to Server via SCP
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        # password: ${{ secrets.SERVER_PASSWORD }} # Use this if SSH key is not configured
+        source: "deploy.zip"
+        target: "/var/www/dabo_personal"
+
+    - name: Deploy on Server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
-        command_timeout: 20m
-        timeout: 1200s  # 20分钟，以秒为单位
+        # password: ${{ secrets.SERVER_PASSWORD }} # Use this if SSH key is not configured
         script: |
-          set -e  # Exit on error
-          set -x  # Enable debug output
+          set -e
+          cd /var/www/dabo_personal
           
-          echo "🚀 Starting deployment at $(date)"
+          echo "📦 Unzipping artifact..."
+          unzip -o deploy.zip
           
-          cd /var/www/dabo_personal || { echo "❌ Failed to cd to /var/www/dabo_personal"; exit 1; }
-          
-          echo "📦 Pulling latest code..."
-          git fetch origin main || { echo "❌ Git fetch failed"; exit 1; }
-          git reset --hard origin/main || { echo "❌ Git reset failed"; exit 1; }
-          # 只清理未跟踪的文件，保留 .next 目录以加速构建
-          git clean -fd --exclude='.next' || { echo "⚠️  Git clean had issues but continuing..."; }
-          
-          echo "📋 Current commit:"
-          git log -1 --oneline || { echo "⚠️  Could not show commit"; }
-          
-          echo "🔧 Ensuring environment variables..."
-          if [ ! -f .env.local ]; then
-            if [ -f .env.production ]; then
-              cp .env.production .env.local
-              echo "✅ Copied .env.production to .env.local"
-            else
-              echo "⚠️  .env.production not found, .env.local may be missing"
-            fi
-          else
-            echo "✅ .env.local already exists"
-          fi
-          
-          echo "📥 Installing dependencies..."
-          echo "Current directory: $(pwd)"
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          
-          # 清理可能损坏的 node_modules
-          if [ -d "node_modules" ]; then
-            echo "清理旧的 node_modules..."
-            rm -rf node_modules
-          fi
-          
-          # 安装所有依赖（包括 devDependencies，因为构建需要）
-          timeout 600 npm ci --no-audit || {
-            echo "⚠️  npm ci failed, trying npm install..."
-            timeout 600 npm install --no-audit || {
-              echo "❌ npm install also failed"
-              echo "检查 package-lock.json..."
-              ls -la package-lock.json || echo "package-lock.json 不存在"
-              exit 1
-            }
-          }
-          
-          # 验证 Next.js 是否安装成功
-          if [ ! -f "node_modules/next/dist/bin/next" ]; then
-            echo "❌ Next.js 未正确安装"
-            echo "检查 node_modules/next:"
-            ls -la node_modules/next/ 2>/dev/null || echo "node_modules/next 不存在"
-            exit 1
-          fi
-          
-          echo "✅ Dependencies installed"
-          echo "验证 Next.js: $(node_modules/next/dist/bin/next --version 2>&1 || echo '无法获取版本')"
-          
-          echo "🔨 Building project..."
-          echo "Build started at $(date)"
-          
-          # 检查服务器资源
-          echo "📊 服务器资源检查:"
-          echo "磁盘空间:"
-          df -h . | head -2 || true
-          echo "内存使用:"
-          free -h | head -2 || true
-          echo "CPU 信息:"
-          nproc || echo "无法获取 CPU 核心数"
-          echo ""
-          
-          # 设置构建环境变量以优化性能
-          export NODE_ENV=production
-          export NEXT_TELEMETRY_DISABLED=1
-          
-          # 设置 Node.js 内存限制（如果服务器内存不足）
-          export NODE_OPTIONS="--max-old-space-size=2048"
-          
-          # 检查是否有旧的构建，如果有则清理缓存（但保留构建产物）
-          if [ -d ".next" ]; then
-            echo "清理构建缓存以加速构建..."
-            rm -rf .next/cache 2>/dev/null || true
-          fi
-          
-          echo "开始构建（预计 2-4 分钟）..."
-          echo "构建进度会实时输出..."
-          
-          # 记录构建开始时间
-          BUILD_START=$(date +%s)
-          echo "🕐 构建开始时间: $(date)"
-          
-          # 添加心跳机制，每10秒输出一次
-          (
-            COUNTER=0
-            while true; do
-              sleep 10
-              COUNTER=$((COUNTER + 1))
-              ELAPSED=$((COUNTER * 10))
-              echo "⏳ [心跳 ${ELAPSED}s] $(date +%H:%M:%S)" >&2
-              # 每30秒检查一次构建进程
-              if [ $((COUNTER % 3)) -eq 0 ]; then
-                if pgrep -f "next build" > /dev/null 2>&1 || pgrep -f "node.*next" > /dev/null 2>&1; then
-                  echo "✅ 构建进程运行中" >&2
-                else
-                  echo "⚠️  未检测到构建进程" >&2
-                fi
-              fi
-            done
-          ) &
-          HEARTBEAT_PID=$!
-          
-          # 启用 Next.js 详细输出
-          export NEXT_BUILD_VERBOSE=1
-          
-          # 直接运行构建，不使用复杂管道
-          # 输出同时显示和保存
-          npx next build 2>&1 | tee /tmp/build.log || {
-            # 构建失败时停止心跳
-            kill $HEARTBEAT_PID 2>/dev/null || true
-            echo ""
-            echo "❌ Build failed with exit code: $BUILD_EXIT_CODE"
-            echo ""
-            echo "构建日志最后100行:"
-            tail -100 /tmp/build.log || echo "无法读取构建日志"
-            echo ""
-            echo "检查 .next 目录:"
-            ls -la .next/ 2>/dev/null || echo ".next directory not found"
-            echo ""
-            echo "检查磁盘空间:"
-            df -h . || true
-            echo ""
-            echo "检查内存使用:"
-            free -h || true
-            echo ""
-            echo "检查 Node.js 进程:"
-            ps aux | grep -E "node|next" | head -10 || true
-            exit 1
-          }
-          
-          # 构建成功，停止心跳
-          kill $HEARTBEAT_PID 2>/dev/null || true
-          
-          # 计算构建耗时
-          BUILD_END=$(date +%s)
-          BUILD_DURATION=$((BUILD_END - BUILD_START))
-          BUILD_MINUTES=$((BUILD_DURATION / 60))
-          BUILD_SECONDS=$((BUILD_DURATION % 60))
-          
-          echo ""
-          echo "✅ Build completed at $(date)"
-          echo "⏱️  构建耗时: ${BUILD_MINUTES}分${BUILD_SECONDS}秒"
-          echo "📊 构建统计:"
-          if [ -d ".next" ]; then
-            echo "  - .next 目录大小: $(du -sh .next 2>/dev/null | cut -f1 || echo '未知')"
-            echo "  - 构建文件数量: $(find .next -type f 2>/dev/null | wc -l || echo '0')"
-          fi
-          
-          echo "📁 Ensuring logs directory exists..."
-          mkdir -p logs || { echo "⚠️  Could not create logs directory"; }
+          echo "📥 Installing production dependencies..."
+          cd .next/standalone
+          npm install --production
+          cd ../..
           
           echo "🔄 Restarting application..."
-          # 先停止并删除旧进程（如果存在）
-          pm2 delete dabo-personal 2>/dev/null || true
-          sleep 2
-          # 启动新进程
-          pm2 start ecosystem.config.js || {
-            echo "❌ pm2 start failed"
-            echo "检查 PM2 状态:"
-            pm2 list
-            echo "检查应用日志:"
-            pm2 logs dabo-personal --lines 20 --nostream 2>/dev/null || true
-            exit 1
-          }
+          pm2 restart dabo-personal
           
-          echo "⏳ Waiting for application to stabilize..."
-          sleep 3
-          
-          echo "✅ Deployment completed at $(date)!"
-          echo "📋 Application status:"
-          pm2 status dabo-personal || pm2 list
-          
-          echo "📝 Deployed commit:"
-          git log -1 --oneline || echo "Could not show commit"
-          
-          echo "🎉 Deployment finished successfully!"
+          echo "✅ Deployment complete!"

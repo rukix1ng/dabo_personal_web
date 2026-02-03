@@ -63,7 +63,9 @@ export async function setAdminToken(token: string) {
     const cookieStore = await cookies();
     cookieStore.set('admin_token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        // FIXME: Temporarily fail to false to allow login over HTTP (IP address)
+        // Revert to process.env.NODE_ENV === 'production' once SSL is set up
+        secure: false,
         sameSite: 'lax',
         maxAge: 60 * 60 * 24, // 24 hours
         path: '/',
