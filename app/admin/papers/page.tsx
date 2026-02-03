@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, X, Save } from "lucide-react";
 import type { Publication } from "@/types/database";
@@ -15,6 +15,7 @@ interface PaperFormData {
 
 export default function PapersManagementPage() {
     const router = useRouter();
+    const topRef = useRef<HTMLDivElement>(null);
     const [papers, setPapers] = useState<Publication[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -64,6 +65,20 @@ export default function PapersManagementPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        fetchPapers(newPage);
+        // Scroll the parent 'main' container to the top using the ID we added
+        setTimeout(() => {
+            const mainContainer = document.getElementById('admin-content');
+            if (mainContainer) {
+                mainContainer.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+                // Fallback
+                topRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 100);
     };
 
     useEffect(() => {
@@ -175,6 +190,7 @@ export default function PapersManagementPage() {
 
     return (
         <div className="space-y-6">
+            <div ref={topRef} />
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -185,7 +201,7 @@ export default function PapersManagementPage() {
                 </div>
                 <button
                     onClick={() => setShowForm(true)}
-                    className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                    className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer"
                 >
                     <Plus className="h-4 w-4" />
                     添加论文
@@ -209,7 +225,7 @@ export default function PapersManagementPage() {
                             </h2>
                             <button
                                 onClick={resetForm}
-                                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted"
+                                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted cursor-pointer"
                             >
                                 <X className="h-5 w-5" />
                             </button>
@@ -299,7 +315,7 @@ export default function PapersManagementPage() {
                             <div className="flex gap-3 pt-4">
                                 <button
                                     type="submit"
-                                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer"
                                 >
                                     <Save className="h-4 w-4" />
                                     {editingId ? "更新" : "创建"}
@@ -307,7 +323,7 @@ export default function PapersManagementPage() {
                                 <button
                                     type="button"
                                     onClick={resetForm}
-                                    className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                                    className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted cursor-pointer"
                                 >
                                     取消
                                 </button>
@@ -362,7 +378,7 @@ export default function PapersManagementPage() {
                                                     href={paper.link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="font-medium text-primary hover:underline"
+                                                    className="font-medium text-primary hover:underline cursor-pointer"
                                                 >
                                                     {paper.title}
                                                 </a>
@@ -392,14 +408,14 @@ export default function PapersManagementPage() {
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => handleEdit(paper)}
-                                                    className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10"
+                                                    className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10 cursor-pointer"
                                                     title="编辑"
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(paper.id)}
-                                                    className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-500/10"
+                                                    className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-500/10 cursor-pointer"
                                                     title="删除"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -424,11 +440,11 @@ export default function PapersManagementPage() {
                         <button
                             onClick={() => {
                                 if (pagination.hasPrevPage) {
-                                    fetchPapers(page - 1);
+                                    handlePageChange(page - 1);
                                 }
                             }}
                             disabled={!pagination.hasPrevPage}
-                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             上一页
                         </button>
@@ -436,12 +452,11 @@ export default function PapersManagementPage() {
                             {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
                                 <button
                                     key={pageNum}
-                                    onClick={() => fetchPapers(pageNum)}
-                                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                                        pageNum === page
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'text-foreground hover:bg-muted'
-                                    }`}
+                                    onClick={() => handlePageChange(pageNum)}
+                                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${pageNum === page
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-foreground hover:bg-muted'
+                                        }`}
                                 >
                                     {pageNum}
                                 </button>
@@ -450,11 +465,11 @@ export default function PapersManagementPage() {
                         <button
                             onClick={() => {
                                 if (pagination.hasNextPage) {
-                                    fetchPapers(page + 1);
+                                    handlePageChange(page + 1);
                                 }
                             }}
                             disabled={!pagination.hasNextPage}
-                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             下一页
                         </button>

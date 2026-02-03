@@ -30,7 +30,7 @@ export default async function AdminLayout({
     console.log('AdminLayout rendered, admin:', admin.username);
 
     return (
-        <div className="flex min-h-screen bg-background">
+        <div className="flex h-screen overflow-hidden bg-background">
             {/* Sidebar */}
             <aside className="fixed left-0 top-0 h-screen w-64 border-r border-border bg-card/30">
                 <div className="flex h-full flex-col">
@@ -46,11 +46,10 @@ export default async function AdminLayout({
                     <nav className="flex-1 space-y-1 p-4">
                         <Link
                             href="/admin/papers"
-                            className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                                pathname === "/admin/papers" || pathname.startsWith("/admin/papers")
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-foreground hover:bg-primary/10 hover:text-primary"
-                            }`}
+                            className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname === "/admin/papers" || pathname.startsWith("/admin/papers")
+                                ? "bg-primary/10 text-primary"
+                                : "text-foreground hover:bg-primary/10 hover:text-primary"
+                                }`}
                         >
                             {(pathname === "/admin/papers" || pathname.startsWith("/admin/papers")) && (
                                 <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
@@ -82,7 +81,7 @@ export default async function AdminLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="ml-64 flex-1 overflow-auto">
+            <main id="admin-content" className="ml-64 flex-1 overflow-auto">
                 <div className="container mx-auto p-8">{children}</div>
             </main>
         </div>
