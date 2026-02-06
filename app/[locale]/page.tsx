@@ -70,12 +70,12 @@ export default async function LocaleHome({ params }: PageProps) {
         {/* Overview Section with Top Border */}
         <section id="overview" className="flex flex-col overflow-hidden rounded-xl bg-card shadow-md">
           {/* Top Primary Color Bar */}
-          <div className="h-2 bg-primary" />
+          <div className="h-1.5 bg-primary" />
 
           {/* Main Content Area */}
           <div className="flex flex-col gap-6 p-8 sm:p-10">
             {/* Project Name */}
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {t.hero.name}
             </h1>
 
@@ -100,7 +100,7 @@ export default async function LocaleHome({ params }: PageProps) {
         {/* Section Header */}
         <div className="flex items-center gap-4">
           <div className="h-8 w-1.5 bg-primary rounded-full" />
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="text-2xl font-bold text-foreground sm:text-2xl">
             {t.sections.personalIntroTitle}
           </h2>
         </div>
