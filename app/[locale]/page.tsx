@@ -65,90 +65,28 @@ export default async function LocaleHome({ params }: PageProps) {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
-      <header className="flex flex-col gap-6">
+    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-12 px-4 py-12 sm:px-6 lg:px-8">
+      <header className="flex flex-col gap-8">
         {/* Overview Section with Top Border */}
-        <section id="overview" className="flex flex-col overflow-hidden rounded-lg bg-card shadow-sm">
+        <section id="overview" className="flex flex-col overflow-hidden rounded-xl bg-card shadow-md">
           {/* Top Primary Color Bar */}
-          <div className="h-1.5 bg-primary" />
+          <div className="h-2 bg-primary" />
 
           {/* Main Content Area */}
-          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:gap-8 sm:p-8">
-            {/* Left: Portrait Image */}
-            <div className="relative h-48 w-48 shrink-0 overflow-hidden rounded-full bg-muted sm:h-56 sm:w-56">
-              <AvatarImage
-                src="/avatar.jpg"
-                alt={`${t.hero.name} avatar`}
-                fallbackSrc="/avatar.svg"
-                className="object-cover"
-                priority
-              />
-            </div>
+          <div className="flex flex-col gap-6 p-8 sm:p-10">
+            {/* Project Name */}
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              {t.hero.name}
+            </h1>
 
-            {/* Right: Information */}
-            <div className="flex flex-1 flex-col gap-4">
-              {/* Name */}
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {t.hero.name}
-              </h1>
-
-              {/* Title/Affiliation */}
-              <p className="text-sm leading-relaxed text-foreground sm:text-base">
-                {t.hero.title}
-              </p>
-
-              {/* Research Fields */}
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-foreground">
-                  {t.info.fieldsLabel}:
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {t.info.fields.map((field) => (
-                    <span
-                      key={field}
-                      className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                    >
-                      {field}
-                    </span>
-                  ))}
-                </div>
+            {/* Project Description */}
+            {t.hero.description && (
+              <div className="flex flex-col gap-4">
+                <p className="text-base leading-relaxed text-foreground sm:text-lg">
+                  {t.hero.description}
+                </p>
               </div>
-
-              {/* Contact Information */}
-              <div className="flex flex-col gap-3">
-                {/* Phone */}
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="text-sm text-foreground">
-                    <span className="font-medium">{t.info.phoneLabel}: </span>
-                    <span>{t.info.phone}</span>
-                  </span>
-                </div>
-
-                {/* Email */}
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="text-sm text-foreground">
-                    <span className="font-medium">{t.info.emailLabel}: </span>
-                    <a
-                      href={`mailto:${t.info.email}`}
-                      className="text-primary hover:underline"
-                    >
-                      {t.info.email}
-                    </a>
-                  </span>
-                </div>
-
-                {/* Address */}
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" />
-                  <span className="text-sm text-foreground">
-                    <span className="font-medium">{t.info.addressLabel}: </span>
-                    <span>{t.info.address}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -157,136 +95,156 @@ export default async function LocaleHome({ params }: PageProps) {
       {/* Divider */}
       <div className="border-t border-border" />
 
-      {/* Personal Introduction Section */}
-      <section id="bio" className="flex flex-col gap-6">
-        {/* Section Title with Primary Color Bar */}
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1 bg-primary" />
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
+      {/* Unified Project Leader Section */}
+      <section id="bio" className="flex flex-col gap-12">
+        {/* Section Header */}
+        <div className="flex items-center gap-4">
+          <div className="h-8 w-1.5 bg-primary rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
             {t.sections.personalIntroTitle}
           </h2>
         </div>
 
-        {/* Personal Profile */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-base font-bold text-foreground sm:text-lg">
-            {t.sections.personalProfile.title}:
-          </h3>
-          <p className="text-sm leading-relaxed text-foreground sm:text-base">
-            {t.sections.personalProfile.content}
-          </p>
-        </div>
+        <div className="grid gap-12 md:grid-cols-[300px_1fr]">
+          {/* Sidebar: Profile and Contact Info */}
+          <aside className="flex flex-col gap-10">
+            <div className="sticky top-10 flex flex-col gap-10">
+              {/* Avatar and Basic Info */}
+              <div className="flex flex-col gap-8">
+                <div className="relative aspect-square overflow-hidden rounded-3xl bg-muted shadow-xl ring-1 ring-border">
+                  <AvatarImage
+                    src="/avatar.jpg"
+                    alt={locale === "zh" ? "达 博" : locale === "ja" ? "達 博" : "Dr. Da Bo"}
+                    className="object-cover"
+                    priority
+                  />
+                </div>
 
-        {/* Main Research Areas */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-base font-bold text-foreground sm:text-lg">
-            {t.sections.mainResearchAreas.title}:
-          </h3>
-          <FormattedText
-            text={t.sections.mainResearchAreas.content}
-            className="text-sm leading-relaxed text-foreground sm:text-base"
-          />
-        </div>
+                <div className="space-y-4">
+                  <h3 className="text-3xl font-bold text-foreground">
+                    {locale === "zh" ? "达 博" : locale === "ja" ? "達 博" : "Dr. Da Bo"}
+                  </h3>
+                  <p className="text-base font-semibold text-foreground leading-relaxed">
+                    {t.hero.title}
+                  </p>
+                </div>
 
-        {/* Research Content */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-base font-bold text-foreground sm:text-lg">
-            {t.sections.researchContent.title}:
-          </h3>
-
-          {/* Keywords */}
-          <div className="flex flex-wrap gap-2">
-            {t.sections.researchContent.keywords.map((keyword) => (
-              <span
-                key={keyword}
-                className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-              >
-                {keyword}
-              </span>
-            ))}
-          </div>
-
-          {/* Description */}
-          <FormattedText
-            text={t.sections.researchContent.description}
-            className="text-sm leading-relaxed text-foreground sm:text-base"
-          />
-
-          {/* Detailed Description */}
-          <p className="text-sm leading-relaxed text-foreground sm:text-base">
-            {t.sections.researchContent.detailedDescription}
-          </p>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      <section id="experience" className="flex flex-col gap-6">
-        {/* Section Title with Primary Color Bar */}
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1 bg-primary" />
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-            {t.sections.experience.title}
-          </h2>
-        </div>
-
-        {/* Experience Timeline */}
-        <div className="relative flex flex-col gap-0">
-          {t.sections.experience.items.map((item, index) => (
-            <div key={index} className="relative flex gap-6 pb-8 last:pb-0">
-              {/* Timeline Line and Dot */}
-              <div className="relative flex flex-col items-center">
-                <div className="relative z-10 h-4 w-4 rounded-full border-2 border-primary bg-background" />
-                {index < t.sections.experience.items.length - 1 && (
-                  <div className="absolute top-4 left-1/2 h-full w-0.5 -translate-x-1/2 bg-primary/20" />
-                )}
+                {/* Research Tags - Moved here below title */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                    {t.info.fieldsLabel}
+                  </h4>
+                  <div className="flex flex-wrap gap-2.5">
+                    {t.info.fields.map((field) => (
+                      <span
+                        key={field}
+                        className="rounded-lg bg-secondary/60 px-3 py-2 text-sm font-semibold text-secondary-foreground ring-1 ring-border/50 transition-all hover:bg-primary/10 hover:text-primary shadow-sm"
+                      >
+                        {field}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Content */}
-              <div className="flex-1 pb-2">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-base font-bold text-foreground sm:text-lg">
-                      {item.year}
-                    </span>
-                    <span className="text-sm font-medium text-muted-foreground sm:text-base">
-                      {item.institution}
-                    </span>
+              {/* Contact Information */}
+              <div className="flex flex-col gap-5 pt-8 border-t border-border/50">
+                <div className="flex items-center gap-4 group">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white group-hover:scale-110">
+                    <Mail className="h-5 w-5" />
                   </div>
-                  <p className="text-sm text-foreground sm:text-base">{item.position}</p>
+                  <a href={`mailto:${t.info.email}`} className="text-base text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline truncate">
+                    {t.info.email}
+                  </a>
+                </div>
+                <div className="flex items-start gap-4 group">
+                  <div className="flex h-10 w-10 shrink-0 mt-0.5 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white group-hover:scale-110">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <p className="flex-1 text-base text-foreground leading-relaxed">
+                    {t.info.address}
+                  </p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </aside>
 
-      {/* Academic Positions Section */}
-      <section id="academic-positions" className="flex flex-col gap-6">
-        {/* Section Title with Primary Color Bar */}
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1 bg-primary" />
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-            {t.sections.academicPositions.title}
-          </h2>
-        </div>
+          {/* Main Column: Bio, Experience, Honors */}
+          <div className="flex flex-col gap-16">
+            {/* Biography */}
+            <div className="space-y-6">
+              <h4 className="text-xl font-bold text-foreground flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                {t.sections.personalProfile.title}
+              </h4>
+              <FormattedText
+                text={t.sections.personalProfile.content}
+                className="text-base leading-relaxed text-foreground sm:text-lg border-l-4 border-primary/10 pl-6 py-2"
+              />
+            </div>
 
-        {/* Academic Positions List */}
-        <div className="grid gap-3 sm:grid-cols-2">
-          {t.sections.academicPositions.items.map((item, index) => (
-            <div
-              key={index}
-              className="group rounded-lg border border-border/50 bg-card/30 p-4 transition-all hover:border-primary/50 hover:bg-card/50"
-            >
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
-                  {index + 1}
-                </span>
-                <p className="flex-1 text-sm leading-relaxed text-foreground sm:text-base">
-                  {item}
-                </p>
+            {/* Experience timeline */}
+            <div className="space-y-8 pt-8 border-t border-border/50">
+              <h4 className="text-xl font-bold text-foreground flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                {t.sections.experience.title}
+              </h4>
+
+              <div className="relative flex flex-col gap-2 pt-4">
+                {t.sections.experience.items.map((item, index) => (
+                  <div key={index} className="relative flex gap-8 pb-10 last:pb-0">
+                    <div className="relative flex flex-col items-center">
+                      <div className="relative z-10 h-4 w-4 rounded-full border-2 border-primary bg-background shadow-sm" />
+                      {index < t.sections.experience.items.length - 1 && (
+                        <div className="absolute top-4 left-1/2 h-full w-0.5 -translate-x-1/2 bg-primary/10" />
+                      )}
+                    </div>
+
+                    <div className="flex-1 pb-2">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-baseline gap-4 flex-wrap">
+                          <span className="text-base font-extrabold text-foreground">
+                            {item.year}
+                          </span>
+                          <FormattedText
+                            text={item.institution}
+                            className="text-base font-semibold text-muted-foreground inline-block"
+                          />
+                        </div>
+                        <p className="text-base font-medium text-foreground/80 leading-relaxed">{item.position}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+
+            {/* Honors Section */}
+            <div className="space-y-8 pt-8 border-t border-border/50">
+              <h4 className="text-xl font-bold text-foreground flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                {t.sections.academicPositions.title}
+              </h4>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {t.sections.academicPositions.items.map((item, index) => (
+                  <div
+                    key={index}
+                    className="group rounded-xl border border-border/40 bg-card/20 p-6 transition-all hover:border-primary/40 hover:bg-card/40 hover:shadow-lg"
+                  >
+                    <div className="flex items-start gap-4">
+                      <span className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary transition-all group-hover:bg-primary group-hover:text-white">
+                        {index + 1}
+                      </span>
+                      <p className="flex-1 text-base leading-relaxed text-foreground">
+                        {item}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -24,23 +24,25 @@ export const content = {
       ],
     },
     hero: {
-      name: "Dr. Da Bo",
-      title:
-        "Senior Researcher, National Institute for Materials Science (NIMS)"
+      name: "High-Performance Materials for Semiconductor Manufacturing Systems",
+      title: "Principal Researcher, Quantum Beam Diffraction Group, Advanced Analysis Field, Research Center for Structural Materials",
+      description: "This project is based on a strategic donation and collaboration from Lam Research Corporation (Fremont, U.S.A.) to the National Institute for Materials Science (NIMS, Tsukuba, Japan). NIMS Principal Researcher Dr. Da Bo serves as the project leader and donation recipient."
     },
     info: {
       phoneLabel: "Phone",
       phone: "+86 000-0000-0000",
       addressLabel: "Address",
-      address: "305-0047 1-2-1 Sengen, Tsukuba, Ibaraki, Japan",
+      address: "National Institute for Materials Science (NIMS) 1-2-1 Sengen, Tsukuba, Ibaraki 305-0047, Japan",
       emailLabel: "Email",
       email: "DA.Bo@nims.go.jp",
-      fieldsLabel: "Research Fields",
+      fieldsLabel: "Research Directions",
       fields: [
-        "Theoretical Physics",
-        "Quantum Materials",
-        "Semiconductor Devices",
-        "Nanophotonics",
+        "Semiconductor Equipment",
+        "Semiconductor Equipment Materials",
+        "Etching Equipment Materials",
+        "Electron Beam Equipment Materials",
+        "Electron Beam Metrology Algorithms",
+        "Electron Beam-Material Interaction",
       ],
     },
     sections: {
@@ -52,11 +54,11 @@ export const content = {
         "Your Name received a Ph.D. in Physics from Your University and completed postdoctoral training in condensed matter theory. They joined the Institute of Theoretical Physics in 2022 and currently lead a semiconductor research group focused on quantum devices and low-dimensional materials.",
         "Their research combines ab initio modeling, transport theory, and device simulation to understand charge, spin, and heat dynamics in emerging semiconductor systems. Their work has been published in leading journals and presented at international conferences in physics and materials science.",
       ],
-      personalIntroTitle: "Personal Introduction",
+      personalIntroTitle: "Project Leader",
       personalProfile: {
-        title: "Personal Profile",
+        title: "Introduction",
         content:
-          "Dr. Da Bo is currently a Senior Researcher at the National Institute for Materials Science (NIMS) in Japan. He obtained his Ph.D. in Physics from the University of Science and Technology of China (USTC) in 2013, and subsequently joined NIMS, becoming the only person under 30 to receive a permanent position at the institute due to his outstanding research achievements. As an expert in materials physics and electron microscopy, Dr. Da Bo is dedicated to developing novel material characterization and measurement analysis methods by integrating electron beam theory with artificial intelligence (AI) technology. He has published numerous papers in top-tier journals such as Nature Communications and Physical Review Letters, and has received multiple prestigious honors including the NIMS President's Award, the Hitachi Foundation Kurata Grant, and the Kao Science Award. He currently serves as Team Leader for the JST-next project in the materials circulation field and holds core positions in several international academic organizations, making him an active next-generation materials scientist on the international stage.",
+          "Dr. Da Bo is currently a Principal Researcher at the [National Institute for Materials Science (NIMS)](https://www.nims.go.jp).",
       },
       mainResearchAreas: {
         title: "Main Research Areas",
@@ -74,17 +76,16 @@ export const content = {
       experience: {
         title: "Experience",
         items: [
-          { year: "2024 – Present", institution: "JST-next Project (Materials Circulation)", position: "Team Leader" },
-          { year: "April 2019 – Present", institution: "National Institute for Materials Science (NIMS)", position: "Senior Researcher" },
-          { year: "December 2016 – April 2019", institution: "National Institute for Materials Science (NIMS)", position: "Researcher" },
-          { year: "January 2015 – December 2016", institution: "National Institute for Materials Science (NIMS)", position: "ICYS Researcher" },
-          { year: "November 2013 – January 2015", institution: "National Institute for Materials Science (NIMS)", position: "Postdoctoral Researcher" },
-          { year: "September 2008 – June 2013", institution: "University of Science and Technology of China", position: "Ph.D. in Physics" },
-          { year: "September 2004 – June 2008", institution: "University of Science and Technology of China", position: "B.S. in Physics" },
+          { year: "April 2019 – Present", institution: "[National Institute for Materials Science (NIMS)](https://www.nims.go.jp)", position: "Principal Researcher" },
+          { year: "December 2016 – April 2019", institution: "[National Institute for Materials Science (NIMS)](https://www.nims.go.jp)", position: "Researcher" },
+          { year: "January 2015 – December 2016", institution: "[National Institute for Materials Science (NIMS)](https://www.nims.go.jp)", position: "ICYS Researcher" },
+          { year: "November 2013 – January 2015", institution: "[National Institute for Materials Science (NIMS)](https://www.nims.go.jp)", position: "Postdoctoral Researcher" },
+          { year: "September 2008 – June 2013", institution: "[University of Science and Technology of China (USTC)](https://www.ustc.edu.cn)", position: "Ph.D. in Physics" },
+          { year: "September 2004 – June 2008", institution: "[University of Science and Technology of China (USTC)](https://www.ustc.edu.cn)", position: "B.S. in Physics" },
         ],
       },
       academicPositions: {
-        title: "Academic Positions & Social Services",
+        title: "Honors & Professional Recognition",
         items: [
           "Head of External Relations and Liaison, Japan Society for Applied Surface Analysis",
           "President, Japan Monte Carlo Method Association",
@@ -200,18 +201,26 @@ export const content = {
       ],
     },
     hero: {
-      name: "达 博",
-      title: "材料基础研究中心 先进解析领域 量子束衍射组 主任研究员"
+      name: "面向半导体制造系统的高性能材料研究",
+      title: "材料基础研究中心 先进解析领域 量子束衍射组主任研究员",
+      description: "本项目基于泛林集团（Lam Research Corporation, Fremont, U.S.A.）向日本国立材料研究所（NIMS, Tsukuba, Japan）提供的战略性捐赠及相关合作开展，日本国立材料研究所达博主任研究员为项目负责人及捐赠接收方。"
     },
     info: {
       phoneLabel: "电话",
       phone: "+86 000-0000-0000",
       addressLabel: "地址",
-      address: "305-0047 日本茨城县筑波市千现1-2-1",
+      address: "国立研究開発法人物質・材料研究機構 〒305-0047 茨城県つくば市千現1-2-1",
       emailLabel: "邮箱",
       email: "DA.Bo@nims.go.jp",
       fieldsLabel: "研究方向",
-      fields: ["纳米材料", "表面分析", "背景信号", "二次电子"],
+      fields: [
+        "半导体装备",
+        "半导体装备材料",
+        "刻蚀装备材料",
+        "电子束装备材料",
+        "电子束量检测算法",
+        "电子束与材料项目作用",
+      ],
     },
     sections: {
       shortBioTitle: "简短简介",
@@ -222,11 +231,11 @@ export const content = {
         "你的姓名毕业于某某大学物理学博士，随后从事凝聚态理论博士后研究。2022 年加入理论物理研究所，现主持半导体研究组，聚焦量子器件与低维材料。",
         "研究结合第一性原理建模、输运理论与器件仿真，揭示新型半导体体系中的电荷、自旋与热输运机制。相关成果发表于重要期刊，并在国内外学术会议报告。",
       ],
-      personalIntroTitle: "个人介绍",
+      personalIntroTitle: "项目负责人",
       personalProfile: {
         title: "个人简介",
         content:
-          "达博博士现任日本国立材料科学研究所（NIMS）高级研究员。他于2013年在中国科学技术大学获得物理学博士学位，随后进入NIMS工作，并因其卓越的科研成果，成为该所30岁以下获得永久职位的唯一人选。作为材料物理与电子显微学领域的专家，达博博士致力于通过融合电子束理论与人工智能（AI）技术，开发新型的材料表征与测量分析方法。他在《Nature Communications》、《Physical Review Letters》等顶级期刊发表多篇论文，并囊括了包括NIMS理事长奖、日立基金会仓田奖励金、花王科学奖励金在内的多项重要荣誉。他目前还担任JST-next项目材料循环领域的团队负责人（Team Leader），并在多个国际学术组织中担任核心职务，是活跃于国际舞台的新一代材料科学家。",
+          "达博博士现任[日本国立材料科学研究所（NIMS）](https://www.nims.go.jp)主任研究员。",
       },
       mainResearchAreas: {
         title: "主要研究领域",
@@ -244,17 +253,16 @@ export const content = {
       experience: {
         title: "经历",
         items: [
-          { year: "2024年 – 至今", institution: "JST-next 项目（材料循环）", position: "Team Leader" },
-          { year: "2019年4月 – 至今", institution: "日本国立材料科学研究所 (NIMS)", position: "高级研究员" },
-          { year: "2016年12月 – 2019年4月", institution: "日本国立材料科学研究所 (NIMS)", position: "研究员" },
-          { year: "2015年1月 – 2016年12月", institution: "日本国立材料科学研究所 (NIMS)", position: "ICYS 研究员" },
-          { year: "2013年11月 – 2015年1月", institution: "日本国立材料科学研究所 (NIMS)", position: "博士后研究员" },
-          { year: "2008年9月 – 2013年6月", institution: "中国科学技术大学", position: "理学博士（物理学）" },
-          { year: "2004年9月 – 2008年6月", institution: "中国科学技术大学", position: "理学学士（物理学）" },
+          { year: "2019年4月 – 至今", institution: "[日本国立材料科学研究所（NIMS）](https://www.nims.go.jp)", position: "主任研究员" },
+          { year: "2016年12月 – 2019年4月", institution: "[日本国立材料科学研究所（NIMS）](https://www.nims.go.jp)", position: "研究员" },
+          { year: "2015年1月 – 2016年12月", institution: "[日本国立材料科学研究所（NIMS）](https://www.nims.go.jp)", position: "ICYS 研究员" },
+          { year: "2013年11月 – 2015年1月", institution: "[日本国立材料科学研究所（NIMS）](https://www.nims.go.jp)", position: "博士后研究员" },
+          { year: "2008年9月 – 2013年6月", institution: "[中国科学技术大学](https://www.ustc.edu.cn)", position: "理学博士（物理学）" },
+          { year: "2004年9月 – 2008年6月", institution: "[中国科学技术大学](https://www.ustc.edu.cn)", position: "理学学士（物理学）" },
         ],
       },
       academicPositions: {
-        title: "学术兼职与社会服务",
+        title: "获得荣誉",
         items: [
           "日本应用表面分析学会 对外联系交涉部负责人",
           "日本蒙特卡洛方法协会 理事长",
@@ -371,21 +379,24 @@ export const content = {
     },
     hero: {
       name: "達 博",
-      title: "物質・材料研究機構（NIMS）主幹研究員"
+      title: "材料基盤研究センター 先進解析領域 量子ビーム回折グループ 主任研究員",
+      description: ""
     },
     info: {
       phoneLabel: "電話",
       phone: "+86 000-0000-0000",
       addressLabel: "住所",
-      address: "305-0047 茨城県つくば市千現1-2-1",
+      address: "国立研究開発法人物質・材料研究機構 〒305-0047 茨城県つくば市千現1-2-1",
       emailLabel: "メール",
       email: "DA.Bo@nims.go.jp",
       fieldsLabel: "研究分野",
       fields: [
-        "理論物理",
-        "量子材料",
-        "半導体デバイス",
-        "ナノフォトニクス",
+        "半導体装置",
+        "半導体装置材料",
+        "エッチング装置材料",
+        "電子ビーム装置材料",
+        "電子ビーム計測アルゴリズム",
+        "電子ビームと材料の相互作用",
       ],
     },
     sections: {
@@ -397,11 +408,11 @@ export const content = {
         "あなたの名前は○○大学で物理学の博士号を取得し、凝縮系理論のポスドク研究を経て 2022 年に理論物理研究所に着任しました。現在は量子デバイスと低次元材料に焦点を当てた半導体研究グループを率いています。",
         "研究では第一原理計算、輸送理論、デバイスシミュレーションを統合し、新規半導体系における電荷・スピン・熱輸送の理解を進めています。",
       ],
-      personalIntroTitle: "個人紹介",
+      personalIntroTitle: "プロジェクトリーダー",
       personalProfile: {
         title: "個人プロフィール",
         content:
-          "達博博士は現在、日本の物質・材料研究機構（NIMS）の主幹研究員です。2013年に中国科学技術大学で物理学博士号を取得後、NIMSに入所し、卓越した研究成果により30歳未満で同機構の永久職を獲得した唯一の人物となりました。材料物理学と電子顕微鏡学の専門家として、達博博士は電子ビーム理論と人工知能（AI）技術を融合させ、新しい材料評価・測定分析手法の開発に取り組んでいます。Nature Communications、Physical Review Lettersなどのトップジャーナルに多数の論文を発表し、NIMS理事長賞、日立財団倉田奨励金、花王科学奨励賞など数々の栄誉を受けています。現在、JST-nextプロジェクトの材料循環分野のチームリーダーを務め、複数の国際学術組織で中核的な役割を担う、国際舞台で活躍する次世代の材料科学者です。",
+          "達博博士は現在、[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp)の主任研究員です。",
       },
       mainResearchAreas: {
         title: "主要研究分野",
@@ -419,17 +430,16 @@ export const content = {
       experience: {
         title: "経歴",
         items: [
-          { year: "2024年 – 現在", institution: "JST-nextプロジェクト（材料循環）", position: "チームリーダー" },
-          { year: "2019年4月 – 現在", institution: "物質・材料研究機構（NIMS）", position: "主幹研究員" },
-          { year: "2016年12月 – 2019年4月", institution: "物質・材料研究機構（NIMS）", position: "研究員" },
-          { year: "2015年1月 – 2016年12月", institution: "物質・材料研究機構（NIMS）", position: "ICYS研究員" },
-          { year: "2013年11月 – 2015年1月", institution: "物質・材料研究機構（NIMS）", position: "ポスドク研究員" },
-          { year: "2008年9月 – 2013年6月", institution: "中国科学技術大学", position: "理学博士（物理学）" },
-          { year: "2004年9月 – 2008年6月", institution: "中国科学技術大学", position: "理学学士（物理学）" },
+          { year: "2019年4月 – 現在", institution: "[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp)", position: "主任研究員" },
+          { year: "2016年12月 – 2019年4月", institution: "[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp)", position: "研究員" },
+          { year: "2015年1月 – 2016年12月", institution: "[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp)", position: "ICYS研究員" },
+          { year: "2013年11月 – 2015年1月", institution: "[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp)", position: "ポスドク研究員" },
+          { year: "2008年9月 – 2013年6月", institution: "[中国科学技術大学](https://www.ustc.edu.cn)", position: "理学博士（物理学）" },
+          { year: "2004年9月 – 2008年6月", institution: "[中国科学技術大学](https://www.ustc.edu.cn)", position: "理学学士（物理学）" },
         ],
       },
       academicPositions: {
-        title: "学術兼任・社会貢献",
+        title: "受賞歴・社会貢献",
         items: [
           "日本表面真空学会 渉外・交渉部担当",
           "日本モンテカルロ法協会 理事長",

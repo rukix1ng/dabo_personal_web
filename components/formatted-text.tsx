@@ -17,23 +17,41 @@ export function FormattedText({ text, className = '' }: FormattedTextProps) {
     return (
         <div className={className}>
             {paragraphs.map((paragraph, pIndex) => {
-                // Process bold text within each paragraph
+                // Process bold text and links within each paragraph
                 const parts: React.ReactNode[] = [];
                 let lastIndex = 0;
-                const boldRegex = /\*\*(.*?)\*\*/g;
+
+                // Regex to find either bold text **text** or links [text](url)
+                const regex = /\*\*(.*?)\*\*|\[(.*?)\]\((.*?)\)/g;
                 let match;
 
-                while ((match = boldRegex.exec(paragraph)) !== null) {
-                    // Add text before the bold part
+                while ((match = regex.exec(paragraph)) !== null) {
+                    // Add text before the match
                     if (match.index > lastIndex) {
                         parts.push(paragraph.substring(lastIndex, match.index));
                     }
-                    // Add bold text
-                    parts.push(
-                        <strong key={`bold-${pIndex}-${match.index}`} className="font-bold">
-                            {match[1]}
-                        </strong>
-                    );
+
+                    if (match[1]) {
+                        // Bold match: **text**
+                        parts.push(
+                            <strong key={`bold-${pIndex}-${match.index}`} className="font-bold">
+                                {match[1]}
+                            </strong>
+                        );
+                    } else if (match[2] && match[3]) {
+                        // Link match: [text](url)
+                        parts.push(
+                            <a
+                                key={`link-${pIndex}-${match.index}`}
+                                href={match[3]}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline font-medium"
+                            >
+                                {match[2]}
+                            </a>
+                        );
+                    }
                     lastIndex = match.index + match[0].length;
                 }
 

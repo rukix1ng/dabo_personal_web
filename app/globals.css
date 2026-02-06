@@ -184,5 +184,9 @@
 @layer base {
   body {
     letter-spacing: var(--tracking-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    font-weight: 450; /* Slightly heavier for better legibility on high-res screens */
   }
 }

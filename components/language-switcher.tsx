@@ -37,7 +37,7 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-muted/50"
+        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-muted/50 cursor-pointer"
         aria-label="Switch language"
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -45,9 +45,8 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
         <Globe className="h-4 w-4 text-muted-foreground" />
         <span className="hidden sm:inline">{localeLabels[currentLocale]}</span>
         <ChevronDown
-          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -61,11 +60,10 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
                 <Link
                   key={locale}
                   href={newHref}
-                  className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-all duration-200 ${
-                    isActive
+                  className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-all duration-200 ${isActive
                       ? "bg-primary/10 text-primary font-medium"
                       : "text-foreground hover:bg-muted/50"
-                  }`}
+                    }`}
                   onClick={() => setIsOpen(false)}
                 >
                   <span>{localeLabels[locale]}</span>
