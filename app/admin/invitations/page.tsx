@@ -451,7 +451,7 @@ export default function InvitationsManagementPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            Title (English) *
+                                            标题（英文）*
                                         </label>
                                         <input
                                             type="text"
@@ -465,7 +465,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            Subtitle (English)
+                                            副标题（英文）
                                         </label>
                                         <input
                                             type="text"
@@ -479,7 +479,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            Speaker (English) *
+                                            主讲人（英文）*
                                         </label>
                                         <input
                                             type="text"
@@ -493,7 +493,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            Institution (English)
+                                            主讲人单位（英文）
                                         </label>
                                         <input
                                             type="text"
@@ -507,7 +507,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            Abstract (English)
+                                            摘要（英文）
                                         </label>
                                         <textarea
                                             value={formData.abstract_en}
@@ -526,7 +526,7 @@ export default function InvitationsManagementPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            タイトル（日本語）*
+                                            标题（日文）*
                                         </label>
                                         <input
                                             type="text"
@@ -540,7 +540,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            サブタイトル（日本語）
+                                            副标题（日文）
                                         </label>
                                         <input
                                             type="text"
@@ -554,7 +554,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            講演者（日本語）*
+                                            主讲人（日文）*
                                         </label>
                                         <input
                                             type="text"
@@ -568,7 +568,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            所属機関（日本語）
+                                            主讲人单位（日文）
                                         </label>
                                         <input
                                             type="text"
@@ -582,7 +582,7 @@ export default function InvitationsManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            概要（日本語）
+                                            摘要（日文）
                                         </label>
                                         <textarea
                                             value={formData.abstract_ja}
