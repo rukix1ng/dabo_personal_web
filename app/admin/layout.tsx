@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/auth";
-import { FileText, MessageSquare, Home } from "lucide-react";
+import { FileText, MessageSquare, Home, Presentation } from "lucide-react";
 import Link from "next/link";
 import { headers } from "next/headers";
 
@@ -57,13 +57,19 @@ export default async function AdminLayout({
                             <FileText className="h-5 w-5" />
                             论文管理
                         </Link>
-                        <span
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary opacity-50 cursor-not-allowed"
-                            title="即将上线"
+                        <Link
+                            href="/admin/invitations"
+                            className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname === "/admin/invitations" || pathname.startsWith("/admin/invitations")
+                                ? "bg-primary/10 text-primary"
+                                : "text-foreground hover:bg-primary/10 hover:text-primary"
+                                }`}
                         >
-                            <MessageSquare className="h-5 w-5" />
-                            论坛（即将上线）
-                        </span>
+                            {(pathname === "/admin/invitations" || pathname.startsWith("/admin/invitations")) && (
+                                <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                            )}
+                            <Presentation className="h-5 w-5" />
+                            邀请报告管理
+                        </Link>
                     </nav>
 
                     {/* Back to Frontend */}
