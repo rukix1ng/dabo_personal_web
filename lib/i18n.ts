@@ -46,6 +46,43 @@ export const content = {
       ],
     },
     sections: {
+      industryIntro: {
+        title: "Semiconductor Industry Introduction",
+        content: "The semiconductor industry has emerged as a global foundational sector, underpinning numerous fields such as information and communication, high-performance computing, automotive electronics, and energy. It is characterized by a highly international division of labor, with different regions collaborating closely across design, manufacturing, packaging, and testing. Notably, semiconductor manufacturing is a profoundly \"equipment-driven\" industry, where production capacity and technological capabilities rely heavily on the manufacturing equipment utilized.\n\nAs advanced nodes push toward smaller feature sizes and higher integration, equipment structures—alongside optical and circuit designs—are approaching their physical limits. The potential for performance gains through architectural optimization alone is steadily diminishing. Consequently, key materials, such as electron sources, optical and electron-optical components, and highly durable structural materials, are increasingly recognized as the primary breakthroughs driving the development of next-generation semiconductor equipment. Against this backdrop, [Lam Research](https://www.lamresearch.com/) has made a donation to the research group led by Principal Investigator Dr. Da Bo at the [National Institute for Materials Science (NIMS)](https://www.nims.go.jp/eng/) in Japan, supporting a project dedicated to the development of high-performance materials for semiconductor equipment.\n\nThrough this initiative, we aim to strengthen industry-academia exchange within Japan's semiconductor equipment materials sector. On the one hand, we will invite materials researchers across Japan to visit [NIMS](https://www.nims.go.jp/eng/) for joint research and academic seminars, enabling the research community to better understand the specific material requirements of semiconductor equipment companies. On the other hand, we will share project updates and research outcomes with the industry via media coverage, helping companies track materials research trends and fostering a dynamic, two-way alignment between industrial needs and academic research topics."
+      },
+      projectNews: {
+        title: "Project News",
+        featured: [
+          {
+            id: 1,
+            title: "NIMS and Lam Research Announce Strategic Partnership",
+            date: "2026-02-15",
+            image: "/news-1.jpg",
+            description: "Major collaboration to advance semiconductor equipment materials research"
+          },
+          {
+            id: 2,
+            title: "Breakthrough in High-Performance Materials Development",
+            date: "2026-02-10",
+            image: "/news-2.jpg",
+            description: "New electron source materials show promising results in initial testing"
+          },
+          {
+            id: 3,
+            title: "International Research Exchange Program Launched",
+            date: "2026-02-05",
+            image: "/news-3.jpg",
+            description: "Inviting materials researchers across Japan to collaborate at NIMS"
+          }
+        ],
+        list: [
+          { title: "First Joint Research Seminar Successfully Held", date: "02-09" },
+          { title: "Project Team Visits Lam Research Headquarters", date: "02-06" },
+          { title: "New Laboratory Facilities Inaugurated", date: "02-01" },
+          { title: "Research Findings Published in Leading Journal", date: "01-28" },
+          { title: "Industry-Academia Forum Scheduled for March", date: "01-25" }
+        ]
+      },
       shortBioTitle: "Short Bio",
       shortBio:
         "Your Name is an assistant professor specializing in theoretical physics and semiconductor research. Their work bridges quantum theory, material modeling, and device-level applications with a focus on scalable, energy-efficient technologies.",
@@ -115,7 +152,7 @@ export const content = {
       media: "Media",
       contact: "Contact",
       home: "Home",
-      forum: "NIMS x LAM Forum",
+      forum: "NIMS Invited Talks",
       achievements: "Achievements",
       papers: "Papers",
     },
@@ -132,7 +169,11 @@ export const content = {
       items: "items",
     },
     forum: {
-      title: "NIMS x LAM Forum",
+      title: "NIMS Invited Talks",
+      inviterIntro: {
+        title: "Inviter Introduction",
+        content: "Dr. Da Bo is a Principal Investigator at the [National Institute for Materials Science (NIMS)](https://www.nims.go.jp/eng/) in Japan and the head of the Lam Research–NIMS joint research project. He has long been engaged in the research and development of key algorithms, high-performance materials, and core components for semiconductor equipment, along with conducting system-level co-design research. Dr. Da has received numerous honors, including the NIMS President's Progress Award, the [Kao Science Award](https://www.kao-foundation.or.jp/science), and the [Kurata Grant](https://www.hitachi-zaidan.org/global/activities/kurata) from the Hitachi Global Foundation. Notably, his philosophy, \"Materials change the world, and we create the materials,\" has been adopted by [NIMS](https://www.nims.go.jp/eng/) as its official institutional slogan."
+      },
       host: "Host",
       speaker: "Speaker",
       date: "Date",
@@ -223,6 +264,43 @@ export const content = {
       ],
     },
     sections: {
+      industryIntro: {
+        title: "半导体行业介绍",
+        content: "半导体产业已成为全球性的基础产业，支撑着信息通信、高性能计算、汽车电子和能源等诸多领域。这是一个高度国际分工协作的产业，各地区在设计、制造、封装测试等环节紧密配合。其中，半导体制造是典型的\"装备驱动型\"产业，生产能力和技术水平在很大程度上取决于所采用的制造装备。\n\n随着先进制程向更小特征尺寸和更高集成度推进，装备结构以及光学、电路设计已接近可行极限，单纯依靠架构优化提升性能的空间逐渐收窄。电子源、光学与电子光学元件、高耐受结构材料等关键材料，正日益成为推动新一代半导体装备发展的主要突破口。在这一背景下，[Lam Research（范林集团）](https://www.lamresearch.com/zh-hans/)向[日本物质・材料研究机构（NIMS）](https://www.nims.go.jp/)Da Bo主任研究员课题组提供捐赠，用于支持面向半导体装备的高性能材料开发项目。\n\n依托该项目，我们希望加强日本半导体装备材料领域的产学交流。一方面，邀请日本材料领域研究人员访问 [NIMS](https://www.nims.go.jp/)、开展联合研究和学术报告，使研究方更充分理解半导体装备企业在材料方面的需求；另一方面，通过媒体报道向产业界介绍项目进展和研究成果，帮助企业把握材料研究动向，推动产业需求与科研课题的双向对接。"
+      },
+      projectNews: {
+        title: "项目相关新闻",
+        featured: [
+          {
+            id: 1,
+            title: "NIMS与泛林集团宣布战略合作伙伴关系",
+            date: "2026-02-15",
+            image: "/news-1.jpg",
+            description: "推进半导体装备材料研究的重大合作"
+          },
+          {
+            id: 2,
+            title: "高性能材料开发取得突破",
+            date: "2026-02-10",
+            image: "/news-2.jpg",
+            description: "新型电子源材料在初步测试中显示出良好前景"
+          },
+          {
+            id: 3,
+            title: "国际研究交流项目启动",
+            date: "2026-02-05",
+            image: "/news-3.jpg",
+            description: "邀请日本各地材料研究人员在NIMS开展合作"
+          }
+        ],
+        list: [
+          { title: "首次联合研究研讨会成功举办", date: "02-09" },
+          { title: "项目团队访问泛林集团总部", date: "02-06" },
+          { title: "新实验室设施落成启用", date: "02-01" },
+          { title: "研究成果发表于顶级期刊", date: "01-28" },
+          { title: "产学论坛定于三月举行", date: "01-25" }
+        ]
+      },
       shortBioTitle: "简短简介",
       shortBio:
         "你的姓名为理论物理与半导体研究方向的助理教授，研究贯通量子理论、材料建模与器件应用，关注可扩展的高效能技术。",
@@ -292,7 +370,7 @@ export const content = {
       media: "媒体",
       contact: "联系",
       home: "首页",
-      forum: "NIMS x LAM 论坛",
+      forum: "NIMS邀请报告",
       achievements: "成就",
       papers: "论文",
     },
@@ -309,7 +387,11 @@ export const content = {
       items: "条数据",
     },
     forum: {
-      title: "NIMS x LAM 论坛",
+      title: "NIMS邀请报告",
+      inviterIntro: {
+        title: "邀请人介绍",
+        content: "达博（Da Bo）博士，[日本国立研究开发法人物质・材料研究机构（NIMS）](https://www.nims.go.jp/)主任研究员、Lam Research–NIMS 联合研究负责人。长期从事半导体装备领域的关键算法、高性能材料及核心部件研发，并开展系统层面的协同设计研究。曾获 NIMS 理事长进步奖、[花王科学奖](https://www.kao-foundation.or.jp/science)、日立财团\"[仓田奖励金](https://www.hitachi-zaidan.org/activities/kurata/)\"等荣誉。其提出的\"材料改变世界，我们创造材料\"理念被 [NIMS](https://www.nims.go.jp/) 采纳为机构宣传口号。"
+      },
       host: "主持人",
       speaker: "主讲人",
       date: "举办时间",
@@ -400,6 +482,43 @@ export const content = {
       ],
     },
     sections: {
+      industryIntro: {
+        title: "半導体産業紹介",
+        content: "半導体産業は世界的な基盤産業となっており、情報通信、高性能コンピューティング、車載電子機器、エネルギーなどの多くの分野を支えています。これは高度な国際分業と協調の上に成り立つ産業であり、各地域が設計、製造、パッケージング、テストなどの各工程で緊密に連携しています。中でも、半導体製造は典型的な「装置主導型」の産業であり、その生産能力と技術水準は導入される製造装置に大きく依存しています。\n\n先端プロセスがより微細な特徴寸法と高い集積度へと進むにつれて、装置構造や光学・回路設計は物理的な限界に近づいており、アーキテクチャの最適化のみによる性能向上の余地は徐々に狭まっています。そのため、電子源、光学および電子光学部品、高耐久性構造材料などの主要材料が、次世代半導体製造装置の発展を推進する主なブレークスルーとしてますます重要視されています。このような背景の下、[Lam Research（ラムリサーチ）](https://www.lamresearch.com/ja/)は、日本の[物質・材料研究機構（NIMS）](https://www.nims.go.jp/)のDa Bo（ダ・ボ）主任研究員が率いる研究グループに寄付を行い、半導体製造装置向けの高性能材料開発プロジェクトを支援しています。\n\n本プロジェクトを通じて、日本の半導体装置材料分野における産学交流の強化を目指しています。一方で、日本の材料分野の研究者を[NIMS](https://www.nims.go.jp/)に招き、共同研究や学術報告を実施することで、研究者側が半導体装置メーカーの材料に対するニーズをより深く理解できる環境を整えます。もう一方で、メディアを通じてプロジェクトの進捗や研究成果を産業界に発信し、企業が材料研究の最新動向を把握できるよう支援するとともに、産業界のニーズと科学研究課題の双方向のマッチングを推進してまいります。"
+      },
+      projectNews: {
+        title: "プロジェクト関連ニュース",
+        featured: [
+          {
+            id: 1,
+            title: "NIMSとラムリサーチが戦略的パートナーシップを発表",
+            date: "2026-02-15",
+            image: "/news-1.jpg",
+            description: "半導体装置材料研究を推進する重要な協力関係"
+          },
+          {
+            id: 2,
+            title: "高性能材料開発でブレークスルー",
+            date: "2026-02-10",
+            image: "/news-2.jpg",
+            description: "新しい電子源材料が初期テストで有望な結果を示す"
+          },
+          {
+            id: 3,
+            title: "国際研究交流プログラムを開始",
+            date: "2026-02-05",
+            image: "/news-3.jpg",
+            description: "日本全国の材料研究者をNIMSでの共同研究に招待"
+          }
+        ],
+        list: [
+          { title: "第1回共同研究セミナーを成功裏に開催", date: "02-09" },
+          { title: "プロジェクトチームがラムリサーチ本社を訪問", date: "02-06" },
+          { title: "新しい研究施設が開設", date: "02-01" },
+          { title: "研究成果が主要学術誌に掲載", date: "01-28" },
+          { title: "産学フォーラムを3月に開催予定", date: "01-25" }
+        ]
+      },
       shortBioTitle: "ショートバイオ",
       shortBio:
         "あなたの名前は理論物理と半導体研究を専門とする助教で、量子理論、材料モデリング、デバイス応用を横断する研究を行っています。",
@@ -469,7 +588,7 @@ export const content = {
       media: "メディア",
       contact: "連絡先",
       home: "ホーム",
-      forum: "NIMS x LAM フォーラム",
+      forum: "NIMS招待講演",
       achievements: "実績",
       papers: "論文",
     },
@@ -486,7 +605,11 @@ export const content = {
       items: "件",
     },
     forum: {
-      title: "NIMS x LAM フォーラム",
+      title: "NIMS招待講演",
+      inviterIntro: {
+        title: "招待者紹介",
+        content: "達博（Da Bo）博士は、[国立研究開発法人物質・材料研究機構（NIMS）](https://www.nims.go.jp/)の主任研究員であり、Lam Research–NIMS共同研究プロジェクトの責任者を務めています。長年にわたり、半導体製造装置分野における重要アルゴリズム、高性能材料、およびコア部品の研究開発に従事するとともに、システムレベルでの協調設計（コデザイン）研究を展開しています。これまでに、NIMS理事長進歩賞、[花王科学賞](https://www.kao-foundation.or.jp/science)、日立財団「[倉田奨励金](https://www.hitachi-zaidan.org/activities/kurata/)」など数々の栄誉を受賞しています。さらに、同氏が提唱した「材料が世界を変え、私たちが材料を創る」という理念は、[NIMS](https://www.nims.go.jp/)の公式キャッチコピーとして採用されています。"
+      },
       host: "司会者",
       speaker: "講演者",
       date: "開催日",
