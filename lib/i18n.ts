@@ -153,11 +153,11 @@ export const content = {
       contact: "Contact",
       home: "Home",
       forum: "NIMS Invited Talks",
-      achievements: "Achievements",
-      papers: "Papers",
+      achievements: "News",
+      papers: "Collaborative Papers",
     },
     papers: {
-      title: "Research Papers",
+      title: "Collaborative Papers",
       description: "A comprehensive list of published research papers and publications.",
       previous: "Previous",
       next: "Next",
@@ -183,7 +183,7 @@ export const content = {
     },
     achievements: {
       mediaReports: {
-        title: "Media Coverage of Research Achievements",
+        title: "News Column",
         readMore: "READ MORE",
         items: [
           {
@@ -371,11 +371,11 @@ export const content = {
       contact: "联系",
       home: "首页",
       forum: "NIMS邀请报告",
-      achievements: "成就",
-      papers: "论文",
+      achievements: "新闻专栏",
+      papers: "合作论文",
     },
     papers: {
-      title: "研究论文",
+      title: "合作论文",
       description: "已发表的研究论文和出版物的完整列表。",
       previous: "上一页",
       next: "下一页",
@@ -401,7 +401,7 @@ export const content = {
     },
     achievements: {
       mediaReports: {
-        title: "新闻报道",
+        title: "新闻专栏",
         readMore: "阅读更多",
         items: [
           {
@@ -460,7 +460,7 @@ export const content = {
       ],
     },
     hero: {
-      name: "達 博",
+      name: "半導体製造システム向け高性能材料研究",
       title: "材料基盤研究センター 先進解析領域 量子ビーム回折グループ 主任研究員",
       description: ""
     },
@@ -589,11 +589,11 @@ export const content = {
       contact: "連絡先",
       home: "ホーム",
       forum: "NIMS招待講演",
-      achievements: "実績",
-      papers: "論文",
+      achievements: "ニュース",
+      papers: "共同論文",
     },
     papers: {
-      title: "研究論文",
+      title: "共同論文",
       description: "発表された研究論文と出版物の包括的なリスト。",
       previous: "前へ",
       next: "次へ",
@@ -619,7 +619,7 @@ export const content = {
     },
     achievements: {
       mediaReports: {
-        title: "メディア報道による研究成果",
+        title: "ニュースコラム",
         readMore: "詳しく見る",
         items: [
           {

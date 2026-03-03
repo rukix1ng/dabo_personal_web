@@ -1,7 +1,6 @@
 import { content, type Locale, locales } from "@/lib/i18n";
 import { PapersPageClient } from "./papers-client";
 import { query } from "@/lib/db";
-import type { Publication } from "@/types/database";
 import type { Metadata } from "next";
 
 // Force dynamic rendering - don't try to build this page statically
@@ -49,37 +48,65 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 interface Paper {
+  id: number;
+  title_en: string;
+  title_zh: string;
+  title_ja: string;
+  author: string | null;
+  journal_name: string | null;
+  image: string | null;
+  description_en: string | null;
+  description_zh: string | null;
+  description_ja: string | null;
+  paper_link: string | null;
+  sponsor_en: string | null;
+  sponsor_zh: string | null;
+  sponsor_ja: string | null;
+  sponsor_link: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface TransformedPaper {
   id: string;
   title: string;
   authors: string[];
   journal: string;
+  journalName: string | null;
   date: string;
   url: string;
+  image: string | null;
+  description: string | null;
+  sponsorLink: string | null;
 }
 
-async function getPapers(): Promise<Paper[]> {
+async function getPapers(locale: Locale): Promise<TransformedPaper[]> {
   try {
-    const publications = await query<Publication>(
-      'SELECT * FROM publications ORDER BY year DESC, id DESC'
+    const papers = await query<Paper>(
+      'SELECT * FROM papers ORDER BY created_at DESC'
     );
 
     // Transform database records to Paper format
-    return publications.map((pub) => ({
-      id: pub.id.toString(),
-      title: pub.title,
-      // Parse authors - assuming it's stored as comma-separated or JSON
-      authors: typeof pub.authors === 'string'
-        ? pub.authors.includes('[')
-          ? JSON.parse(pub.authors)
-          : pub.authors.split(',').map(a => a.trim())
-        : [pub.authors],
-      journal: pub.journal || 'Unknown Journal',
-      date: pub.year ? pub.year.toString() : 'N/A',
-      url: pub.link || '#', // Use link from database, fallback to # if not available
-    }));
+    return papers.map((paper) => {
+      const title = locale === 'zh' ? paper.title_zh : locale === 'ja' ? paper.title_ja : paper.title_en;
+      const sponsor = locale === 'zh' ? paper.sponsor_zh : locale === 'ja' ? paper.sponsor_ja : paper.sponsor_en;
+      const description = locale === 'zh' ? paper.description_zh : locale === 'ja' ? paper.description_ja : paper.description_en;
+
+      return {
+        id: paper.id.toString(),
+        title: title,
+        authors: paper.author ? [paper.author] : [],
+        journal: sponsor || '',
+        journalName: paper.journal_name,
+        date: new Date(paper.created_at).getFullYear().toString(),
+        url: paper.paper_link || '#',
+        image: paper.image,
+        description: description,
+        sponsorLink: paper.sponsor_link,
+      };
+    });
   } catch (error) {
     console.error('Error fetching papers from database:', error);
-    // Return empty array if database fails
     return [];
   }
 }
@@ -90,7 +117,7 @@ export default async function PapersPage({ params }: PageProps) {
   const t = content[locale];
 
   // Fetch papers from database
-  const papers = await getPapers();
+  const papers = await getPapers(locale);
 
   // Generate JSON-LD structured data
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';

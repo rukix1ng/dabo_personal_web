@@ -64,6 +64,7 @@ export default function InvitationsManagementPage() {
     const [successMessage, setSuccessMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState<"zh" | "en" | "ja">("zh");
+    const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
     const [formData, setFormData] = useState<InvitationFormData>({
         title_en: "",
         subtitle_en: "",
@@ -187,10 +188,14 @@ export default function InvitationsManagementPage() {
 
     // Handle delete
     const handleDelete = async (id: number) => {
-        if (!confirm("确定要删除这个邀请报告吗？")) return;
+        setDeleteConfirmId(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteConfirmId) return;
 
         try {
-            const res = await fetch(`/api/admin/invitations/${id}`, {
+            const res = await fetch(`/api/admin/invitations/${deleteConfirmId}`, {
                 method: "DELETE",
             });
 
@@ -202,6 +207,7 @@ export default function InvitationsManagementPage() {
             if (res.ok) {
                 await fetchInvitations();
                 setSuccessMessage("删除成功");
+                setDeleteConfirmId(null);
                 // Scroll to top to show success message
                 topRef.current?.scrollIntoView({ behavior: "smooth" });
             }
@@ -347,7 +353,7 @@ export default function InvitationsManagementPage() {
                         <div className="mb-6 flex gap-2 border-b border-border">
                             <button
                                 onClick={() => setActiveTab("zh")}
-                                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                                className={`px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                                     activeTab === "zh"
                                         ? "border-b-2 border-primary text-primary"
                                         : "text-muted-foreground hover:text-foreground"
@@ -357,7 +363,7 @@ export default function InvitationsManagementPage() {
                             </button>
                             <button
                                 onClick={() => setActiveTab("en")}
-                                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                                className={`px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                                     activeTab === "en"
                                         ? "border-b-2 border-primary text-primary"
                                         : "text-muted-foreground hover:text-foreground"
@@ -367,7 +373,7 @@ export default function InvitationsManagementPage() {
                             </button>
                             <button
                                 onClick={() => setActiveTab("ja")}
-                                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                                className={`px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                                     activeTab === "ja"
                                         ? "border-b-2 border-primary text-primary"
                                         : "text-muted-foreground hover:text-foreground"
@@ -664,14 +670,6 @@ export default function InvitationsManagementPage() {
 
                             <div className="flex gap-3 pt-4">
                                 <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                    <Save className="h-4 w-4" />
-                                    {isSubmitting ? "提交中..." : (editingId ? "更新" : "创建")}
-                                </button>
-                                <button
                                     type="button"
                                     onClick={resetForm}
                                     disabled={isSubmitting}
@@ -679,8 +677,44 @@ export default function InvitationsManagementPage() {
                                 >
                                     取消
                                 </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                >
+                                    <Save className="h-4 w-4" />
+                                    {isSubmitting ? "提交中..." : (editingId ? "更新" : "创建")}
+                                </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirmId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
+                        <h3 className="text-lg font-bold text-foreground mb-4">
+                            确认删除
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-6">
+                            确定要删除这个邀请报告吗？此操作无法撤销。
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setDeleteConfirmId(null)}
+                                className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted cursor-pointer"
+                            >
+                                取消
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 cursor-pointer"
+                            >
+                                确认删除
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -731,9 +765,20 @@ export default function InvitationsManagementPage() {
                                                 {invitation.speaker_zh}
                                             </div>
                                             {invitation.speaker_institution_zh && (
-                                                <div className="text-xs text-muted-foreground">
-                                                    {invitation.speaker_institution_zh}
-                                                </div>
+                                                invitation.speaker_institution_link ? (
+                                                    <a
+                                                        href={invitation.speaker_institution_link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs text-primary hover:underline cursor-pointer"
+                                                    >
+                                                        {invitation.speaker_institution_zh}
+                                                    </a>
+                                                ) : (
+                                                    <div className="text-xs text-muted-foreground">
+                                                        {invitation.speaker_institution_zh}
+                                                    </div>
+                                                )
                                             )}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-muted-foreground">

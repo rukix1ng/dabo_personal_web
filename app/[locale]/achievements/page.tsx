@@ -1,8 +1,8 @@
 import { content, type Locale, locales } from "@/lib/i18n";
-import { Award } from "lucide-react";
+import Link from "next/link";
 import { MediaImage } from "@/components/media-image";
-import { MediaCarousel } from "@/components/media-carousel";
 import type { Metadata } from "next";
+import { query } from "@/lib/db";
 
 type PageProps = {
   params: Promise<{ locale: Locale }>;
@@ -18,9 +18,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const t = content[locale];
 
   return {
-    title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
-    description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
-    keywords: [...t.meta.keywords, "achievements", "awards", "media coverage", "research achievements"],
+    title: `${t.navigation.achievements} | ${t.meta.title}`,
+    description: `${t.navigation.achievements} - ${t.meta.description}`,
+    keywords: [...t.meta.keywords, "news", "media coverage", "research news"],
     alternates: {
       canonical: `/${locale}/achievements`,
       languages: {
@@ -30,18 +30,76 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     },
     openGraph: {
-      title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
-      description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+      title: `${t.navigation.achievements} | ${t.meta.title}`,
+      description: `${t.navigation.achievements} - ${t.meta.description}`,
       type: "website",
       locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
       url: `/${locale}/achievements`,
     },
     twitter: {
       card: "summary",
-      title: `${t.achievements.mediaReports.title} | ${t.meta.title}`,
-      description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
+      title: `${t.navigation.achievements} | ${t.meta.title}`,
+      description: `${t.navigation.achievements} - ${t.meta.description}`,
     },
   };
+}
+
+interface NewsColumn {
+  id: number;
+  title_en: string;
+  title_zh: string;
+  title_ja: string;
+  content_en: string | null;
+  content_zh: string | null;
+  content_ja: string | null;
+  journal_name_en: string | null;
+  journal_name_zh: string | null;
+  journal_name_ja: string | null;
+  author_bio_en: string | null;
+  author_bio_zh: string | null;
+  author_bio_ja: string | null;
+  publish_date: string | Date | null;
+  series_number: number;
+  image: string | null;
+}
+
+async function getNewsColumns(): Promise<NewsColumn[]> {
+  try {
+    const newsColumns = await query<any>(
+      'SELECT * FROM news_column ORDER BY series_number DESC, id DESC'
+    );
+    return newsColumns || [];
+  } catch (error) {
+    console.error('Error fetching news columns:', error);
+    return [];
+  }
+}
+
+function formatPublishDate(dateStr: string | Date | null, locale: string): string {
+  if (!dateStr) return "";
+  let year: number, month: number;
+  if (dateStr instanceof Date) {
+    // Use local date methods to avoid UTC timezone shift
+    year = dateStr.getFullYear();
+    month = dateStr.getMonth() + 1;
+  } else {
+    const s = String(dateStr).includes('T') ? String(dateStr).substring(0, 10) : String(dateStr);
+    const parts = s.split('-');
+    if (!parts[0] || !parts[1]) return "";
+    year = parseInt(parts[0]);
+    month = parseInt(parts[1]);
+  }
+  if (locale === 'en') {
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return `${monthNames[month - 1]} ${year}`;
+  }
+  return `${year}年${month}月`;
+}
+
+function formatSeriesTag(seriesNumber: number, locale: string): string {
+  if (locale === 'en') return `No. ${seriesNumber}`;
+  if (locale === 'ja') return `第${seriesNumber}号`;
+  return `第${seriesNumber}期`;
 }
 
 export default async function AchievementsPage({ params }: PageProps) {
@@ -49,169 +107,106 @@ export default async function AchievementsPage({ params }: PageProps) {
   const locale = localeParam in content ? localeParam : "en";
   const t = content[locale];
 
-  // Generate JSON-LD structured data
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: t.achievements.mediaReports.title,
-    description: `${t.achievements.mediaReports.title} - ${t.meta.description}`,
-    url: `${baseUrl}/${locale}/achievements`,
-    mainEntity: {
-      "@type": "ItemList",
-      numberOfItems: t.achievements.awards.items.length + t.achievements.mediaReports.items.length,
-      itemListElement: [
-        ...t.achievements.mediaReports.items.map((item: any, index: number) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          item: {
-            "@type": "NewsArticle",
-            headline: item.title,
-            description: item.content,
-            datePublished: item.date,
-            publisher: {
-              "@type": "Organization",
-              name: item.journals?.join(", ") || "Media",
-            },
-          },
-        })),
-        ...t.achievements.awards.items.map((item, index) => ({
-          "@type": "ListItem",
-          position: t.achievements.mediaReports.items.length + index + 1,
-          item: {
-            "@type": "Award",
-            name: item.name,
-            dateReceived: item.year,
-          },
-        })),
-      ],
-    },
-  };
+  const newsColumns = await getNewsColumns();
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
-      {/* Media Reports Section */}
+    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
+      {/* News Column Section */}
       <section className="flex flex-col gap-6">
         {/* Section Title with Primary Color Bar */}
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1 bg-primary" />
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
+        <div className="flex items-center gap-4">
+          <div className="h-8 w-1.5 bg-primary rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground sm:text-2xl">
             {t.achievements.mediaReports.title}
           </h2>
         </div>
 
-        {/* Media Reports List */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-          {t.achievements.mediaReports.items.map((item: any, index: number) => (
-            <article
-              key={index}
-              className="group flex flex-col gap-0 overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-xl hover:shadow-primary/5 sm:flex-row"
-            >
-              {/* Image Container with Overlay */}
-              <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-muted sm:w-64 lg:w-72 sm:aspect-square lg:aspect-[4/3]">
-                {item.images ? (
-                  <MediaCarousel images={item.images} />
-                ) : (
-                  <MediaImage
-                    src={item.image}
-                    alt={item.title}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 512px, 600px"
-                    className="transition-transform duration-500 group-hover:scale-105"
-                  />
-                )}
-                <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </div>
+        {/* News List */}
+        <div className="grid gap-6 lg:grid-cols-1">
+          {newsColumns.length === 0 ? (
+            <p className="py-12 text-center text-muted-foreground">
+              {locale === 'zh' ? '暂无新闻专栏' : locale === 'ja' ? 'ニュースコラムはありません' : 'No news columns yet'}
+            </p>
+          ) : (
+            newsColumns.map((item, index) => {
+              const title = locale === 'zh' ? item.title_zh : locale === 'ja' ? item.title_ja : item.title_en;
+              const content_text = locale === 'zh' ? item.content_zh : locale === 'ja' ? item.content_ja : item.content_en;
+              const journalName = locale === 'zh' ? item.journal_name_zh : locale === 'ja' ? item.journal_name_ja : item.journal_name_en;
+              const dateDisplay = formatPublishDate(item.publish_date, locale);
+              const seriesTag = formatSeriesTag(item.series_number, locale);
 
-              {/* Content Area */}
-              <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {item.journals?.map((journal: string, idx: number) => (
-                      <span key={idx} className="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-primary">
-                        {journal}
-                      </span>
-                    ))}
-                    <span className="text-[10px] font-medium text-muted-foreground/60">
-                      {item.date}
-                    </span>
+              return (
+                <article
+                  key={item.id}
+                  className="group flex flex-col gap-0 overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-xl hover:shadow-primary/5 sm:flex-row"
+                >
+                  {/* Image Container */}
+                  <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-muted sm:w-64 lg:w-72 sm:aspect-square lg:aspect-[4/3]">
+                    <MediaImage
+                      src={item.image}
+                      alt={title}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 512px, 600px"
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
-                  <h3 className="text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-xl">
-                    {item.title}
-                  </h3>
-                  <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground/90 sm:text-base">
-                    {item.content}
-                  </p>
-                </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-4">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-primary transition-transform duration-300 group-hover:translate-x-1">
-                    <span>{t.achievements.mediaReports.readMore}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
+                  {/* Content Area */}
+                  <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {journalName && (
+                          <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-primary">
+                            {journalName}
+                          </span>
+                        )}
+                        <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-primary">
+                          {seriesTag}
+                        </span>
+                        {dateDisplay && (
+                          <span className="text-[10px] font-medium text-muted-foreground/60">
+                            {dateDisplay}
+                          </span>
+                        )}
+                      </div>
+                      <Link href={`/${locale}/achievements/${item.id}`}>
+                        <h3 className="text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-xl cursor-pointer">
+                          {title}
+                        </h3>
+                      </Link>
+                      <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground/90 sm:text-base">
+                        {content_text}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-4">
+                      <Link
+                        href={`/${locale}/achievements/${item.id}`}
+                        className="flex items-center gap-1 text-[11px] font-semibold text-primary transition-transform duration-300 group-hover:translate-x-1"
+                      >
+                        <span>{t.achievements.mediaReports.readMore}</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* Awards Section */}
-      <section className="flex flex-col gap-6">
-        {/* Section Title with Primary Color Bar */}
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1 bg-primary" />
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-            {t.achievements.awards.title}
-          </h2>
-        </div>
-
-        {/* Awards Timeline */}
-        <div className="relative flex flex-col gap-0">
-          {t.achievements.awards.items.map((item, index) => (
-            <div key={index} className="relative flex gap-6 pb-8 last:pb-0">
-              {/* Timeline Line and Dot */}
-              <div className="relative flex flex-col items-center">
-                <div className="relative z-10 flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary bg-background">
-                  <Award className="h-2.5 w-2.5 text-primary" />
-                </div>
-                {index < t.achievements.awards.items.length - 1 && (
-                  <div className="absolute top-4 left-1/2 h-full w-0.5 -translate-x-1/2 bg-primary/20" />
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 pb-2">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-base font-bold text-foreground sm:text-lg">
-                      {item.year}
-                    </span>
-                  </div>
-                  <p className="text-sm text-foreground sm:text-base">{item.name}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+                </article>
+              );
+            })
+          )}
         </div>
       </section>
     </main>
-    </>
   );
 }

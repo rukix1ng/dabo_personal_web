@@ -1,87 +1,96 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import type { Publication } from '@/types/database';
+import { NextRequest, NextResponse } from "next/server";
+import { query } from "@/lib/db";
+import { getCurrentAdmin } from "@/lib/auth";
 
-// GET /api/admin/papers - Get all papers
+// GET - 获取所有论文
 export async function GET(request: NextRequest) {
-    try {
-        const admin = await getCurrentAdmin();
-        if (!admin) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = 20;
-        const offset = (page - 1) * limit;
-
-        const papers = await query<any>(
-            'SELECT * FROM publications ORDER BY year DESC, id DESC LIMIT ? OFFSET ?',
-            [limit, offset]
-        );
-
-        const countResult = await query<any>('SELECT COUNT(*) as total FROM publications');
-        const total = countResult[0]?.total || 0;
-        const totalPages = Math.ceil(total / limit);
-
-        return NextResponse.json({ 
-            papers,
-            pagination: {
-                page,
-                limit,
-                total,
-                totalPages,
-                hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching papers:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+  try {
+    const admin = await getCurrentAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const papers = await query(
+      "SELECT * FROM papers ORDER BY created_at DESC"
+    );
+
+    return NextResponse.json({ papers });
+  } catch (error) {
+    console.error("Error fetching papers:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch papers" },
+      { status: 500 }
+    );
+  }
 }
 
-// POST /api/admin/papers - Create new paper
+// POST - 创建新论文
 export async function POST(request: NextRequest) {
-    try {
-        const admin = await getCurrentAdmin();
-        if (!admin) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const body = await request.json();
-        const { title, authors, journal, year, link } = body;
-
-        if (!title || !authors || !journal || !year) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            );
-        }
-
-        // Convert authors array to JSON string
-        const authorsStr = Array.isArray(authors)
-            ? JSON.stringify(authors)
-            : authors;
-
-        const result = await query(
-            'INSERT INTO publications (title, authors, journal, year, link) VALUES (?, ?, ?, ?, ?)',
-            [title, authorsStr, journal, parseInt(year), link || null]
-        );
-
-        return NextResponse.json({
-            success: true,
-            id: (result as any).insertId,
-        });
-    } catch (error) {
-        console.error('Error creating paper:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+  try {
+    const admin = await getCurrentAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const body = await request.json();
+    const {
+      title_en,
+      title_zh,
+      title_ja,
+      author,
+      journal_name,
+      image,
+      description_en,
+      description_zh,
+      description_ja,
+      paper_link,
+      sponsor_en,
+      sponsor_zh,
+      sponsor_ja,
+      sponsor_link,
+    } = body;
+
+    // 验证必填字段
+    if (!title_en || !title_zh || !title_ja) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    const result = await query(
+      `INSERT INTO papers (
+        title_en, title_zh, title_ja, author, journal_name, image,
+        description_en, description_zh, description_ja,
+        paper_link, sponsor_en, sponsor_zh, sponsor_ja, sponsor_link
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title_en,
+        title_zh,
+        title_ja,
+        author || null,
+        journal_name || null,
+        image || null,
+        description_en || null,
+        description_zh || null,
+        description_ja || null,
+        paper_link || null,
+        sponsor_en || null,
+        sponsor_zh || null,
+        sponsor_ja || null,
+        sponsor_link || null,
+      ]
+    );
+
+    return NextResponse.json(
+      { message: "Paper created successfully", id: result.insertId },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating paper:", error);
+    return NextResponse.json(
+      { error: "Failed to create paper" },
+      { status: 500 }
+    );
+  }
 }

@@ -5,47 +5,49 @@ import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, X, Save } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
 
-interface Paper {
+interface NewsColumn {
     id: number;
     title_en: string;
+    content_en: string | null;
+    journal_name_en: string | null;
+    author_bio_en: string | null;
     title_zh: string;
+    content_zh: string | null;
+    journal_name_zh: string | null;
+    author_bio_zh: string | null;
     title_ja: string;
-    author: string | null;
-    journal_name: string | null;
+    content_ja: string | null;
+    journal_name_ja: string | null;
+    author_bio_ja: string | null;
+    publish_date: string;
+    series_number: number;
     image: string | null;
-    description_en: string | null;
-    description_zh: string | null;
-    description_ja: string | null;
-    paper_link: string | null;
-    sponsor_en: string | null;
-    sponsor_zh: string | null;
-    sponsor_ja: string | null;
-    sponsor_link: string | null;
     created_at: string;
     updated_at: string;
 }
 
-interface PaperFormData {
+interface NewsColumnFormData {
     title_en: string;
+    content_en: string;
+    journal_name_en: string;
+    author_bio_en: string;
     title_zh: string;
+    content_zh: string;
+    journal_name_zh: string;
+    author_bio_zh: string;
     title_ja: string;
-    author: string;
-    journal_name: string;
+    content_ja: string;
+    journal_name_ja: string;
+    author_bio_ja: string;
+    publish_date: string;
+    series_number: string;
     image: string;
-    description_en: string;
-    description_zh: string;
-    description_ja: string;
-    paper_link: string;
-    sponsor_en: string;
-    sponsor_zh: string;
-    sponsor_ja: string;
-    sponsor_link: string;
 }
 
-export default function PapersManagementPage() {
+export default function NewsColumnsManagementPage() {
     const router = useRouter();
     const topRef = useRef<HTMLDivElement>(null);
-    const [papers, setPapers] = useState<Paper[]>([]);
+    const [newsColumns, setNewsColumns] = useState<NewsColumn[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
@@ -55,50 +57,51 @@ export default function PapersManagementPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState<"zh" | "en" | "ja">("zh");
     const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
-    const [formData, setFormData] = useState<PaperFormData>({
+    const [formData, setFormData] = useState<NewsColumnFormData>({
         title_en: "",
+        content_en: "",
+        journal_name_en: "",
+        author_bio_en: "",
         title_zh: "",
+        content_zh: "",
+        journal_name_zh: "",
+        author_bio_zh: "",
         title_ja: "",
-        author: "",
-        journal_name: "",
+        content_ja: "",
+        journal_name_ja: "",
+        author_bio_ja: "",
+        publish_date: "",
+        series_number: "",
         image: "",
-        description_en: "",
-        description_zh: "",
-        description_ja: "",
-        paper_link: "",
-        sponsor_en: "",
-        sponsor_zh: "",
-        sponsor_ja: "",
-        sponsor_link: "",
     });
 
-    // Fetch papers
-    const fetchPapers = async () => {
+    // Fetch news columns
+    const fetchNewsColumns = async () => {
         try {
-            const res = await fetch("/api/admin/papers");
+            const res = await fetch("/api/admin/news-columns");
             if (!res.ok) {
                 if (res.status === 401) {
                     router.push("/admin/login");
                     return;
                 } else {
-                    setError("获取论文失败");
+                    setError("获取新闻专栏失败");
                 }
-                setPapers([]);
+                setNewsColumns([]);
                 return;
             }
             const data = await res.json();
-            setPapers(data.papers || []);
+            setNewsColumns(data.newsColumns || []);
             setError("");
         } catch (error) {
-            console.error("获取论文出错:", error);
-            setError("获取论文出错");
+            console.error("获取新闻专栏出错:", error);
+            setError("获取新闻专栏出错");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchPapers();
+        fetchNewsColumns();
     }, []);
 
     // Auto-hide success message after 3 seconds
@@ -123,6 +126,7 @@ export default function PapersManagementPage() {
         if (!formData.title_zh.trim()) errors.push("请填写中文标题");
         if (!formData.title_en.trim()) errors.push("请填写英文标题 (Title)");
         if (!formData.title_ja.trim()) errors.push("请填写日文标题 (タイトル)");
+        if (!formData.series_number.trim()) errors.push("请填写系列期数");
 
         if (errors.length > 0) {
             setValidationErrors(errors);
@@ -133,15 +137,30 @@ export default function PapersManagementPage() {
         setIsSubmitting(true);
 
         try {
+            // Convert month format (YYYY-MM) to full date (YYYY-MM-01) for database
+            let publishDateValue = formData.publish_date;
+            if (publishDateValue && publishDateValue.trim() && publishDateValue.match(/^\d{4}-\d{2}$/)) {
+                publishDateValue = `${publishDateValue}-01`;
+            } else if (!publishDateValue || !publishDateValue.trim()) {
+                // Ensure empty strings are converted to null
+                publishDateValue = null;
+            }
+
+            const payload = {
+                ...formData,
+                publish_date: publishDateValue,
+                series_number: parseInt(formData.series_number),
+            };
+
             const url = editingId
-                ? `/api/admin/papers/${editingId}`
-                : "/api/admin/papers";
+                ? `/api/admin/news-columns/${editingId}`
+                : "/api/admin/news-columns";
             const method = editingId ? "PUT" : "POST";
 
             const res = await fetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
             });
 
             if (res.status === 401) {
@@ -150,13 +169,14 @@ export default function PapersManagementPage() {
             }
 
             if (res.ok) {
-                await fetchPapers();
+                await fetchNewsColumns();
                 setSuccessMessage(editingId ? "更新成功" : "创建成功");
                 resetForm();
+                // Scroll to top to show success message
                 topRef.current?.scrollIntoView({ behavior: "smooth" });
             }
         } catch (error) {
-            console.error("保存论文出错:", error);
+            console.error("保存新闻专栏出错:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -171,7 +191,7 @@ export default function PapersManagementPage() {
         if (!deleteConfirmId) return;
 
         try {
-            const res = await fetch(`/api/admin/papers/${deleteConfirmId}`, {
+            const res = await fetch(`/api/admin/news-columns/${deleteConfirmId}`, {
                 method: "DELETE",
             });
 
@@ -181,34 +201,54 @@ export default function PapersManagementPage() {
             }
 
             if (res.ok) {
-                await fetchPapers();
+                await fetchNewsColumns();
                 setSuccessMessage("删除成功");
                 setDeleteConfirmId(null);
+                // Scroll to top to show success message
                 topRef.current?.scrollIntoView({ behavior: "smooth" });
             }
         } catch (error) {
-            console.error("删除论文出错:", error);
+            console.error("删除新闻专栏出错:", error);
         }
     };
 
     // Handle edit
-    const handleEdit = (paper: Paper) => {
-        setEditingId(paper.id);
+    const handleEdit = (newsColumn: NewsColumn) => {
+        setEditingId(newsColumn.id);
+
+        // Convert date to month format (YYYY-MM) for the month input
+        let publishDateValue = "";
+        if (newsColumn.publish_date) {
+            // Handle both ISO format (2025-03-31T16:00:00.000Z) and simple date format (2025-03-31)
+            const dateStr = newsColumn.publish_date;
+            if (dateStr.includes('T')) {
+                // ISO format - extract date part and convert to YYYY-MM
+                publishDateValue = dateStr.substring(0, 7);
+            } else if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                // Simple date format (YYYY-MM-DD) - extract YYYY-MM
+                publishDateValue = dateStr.substring(0, 7);
+            } else if (dateStr.match(/^\d{4}-\d{2}$/)) {
+                // Already in YYYY-MM format
+                publishDateValue = dateStr;
+            }
+        }
+
         setFormData({
-            title_en: paper.title_en,
-            title_zh: paper.title_zh,
-            title_ja: paper.title_ja,
-            author: paper.author || "",
-            journal_name: paper.journal_name || "",
-            image: paper.image || "",
-            description_en: paper.description_en || "",
-            description_zh: paper.description_zh || "",
-            description_ja: paper.description_ja || "",
-            paper_link: paper.paper_link || "",
-            sponsor_en: paper.sponsor_en || "",
-            sponsor_zh: paper.sponsor_zh || "",
-            sponsor_ja: paper.sponsor_ja || "",
-            sponsor_link: paper.sponsor_link || "",
+            title_en: newsColumn.title_en,
+            content_en: newsColumn.content_en || "",
+            journal_name_en: newsColumn.journal_name_en || "",
+            author_bio_en: newsColumn.author_bio_en || "",
+            title_zh: newsColumn.title_zh,
+            content_zh: newsColumn.content_zh || "",
+            journal_name_zh: newsColumn.journal_name_zh || "",
+            author_bio_zh: newsColumn.author_bio_zh || "",
+            title_ja: newsColumn.title_ja,
+            content_ja: newsColumn.content_ja || "",
+            journal_name_ja: newsColumn.journal_name_ja || "",
+            author_bio_ja: newsColumn.author_bio_ja || "",
+            publish_date: publishDateValue,
+            series_number: newsColumn.series_number.toString(),
+            image: newsColumn.image || "",
         });
         setShowForm(true);
     };
@@ -217,24 +257,39 @@ export default function PapersManagementPage() {
     const resetForm = () => {
         setFormData({
             title_en: "",
+            content_en: "",
+            journal_name_en: "",
+            author_bio_en: "",
             title_zh: "",
+            content_zh: "",
+            journal_name_zh: "",
+            author_bio_zh: "",
             title_ja: "",
-            author: "",
-            journal_name: "",
+            content_ja: "",
+            journal_name_ja: "",
+            author_bio_ja: "",
+            publish_date: "",
+            series_number: "",
             image: "",
-            description_en: "",
-            description_zh: "",
-            description_ja: "",
-            paper_link: "",
-            sponsor_en: "",
-            sponsor_zh: "",
-            sponsor_ja: "",
-            sponsor_link: "",
         });
         setEditingId(null);
         setShowForm(false);
         setActiveTab("zh");
         setValidationErrors([]);
+    };
+
+    // Format date for display
+    const formatPublishDate = (dateString: string) => {
+        // Handle YYYY-MM format (e.g., "2025-04")
+        if (dateString && dateString.match(/^\d{4}-\d{2}$/)) {
+            const [year, month] = dateString.split('-');
+            return `${year}年${parseInt(month)}月`;
+        }
+        // Handle full date format for backward compatibility
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        return `${year}年${month}月`;
     };
 
     if (loading) {
@@ -251,9 +306,9 @@ export default function PapersManagementPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground">合作论文管理</h1>
+                    <h1 className="text-3xl font-bold text-foreground">新闻专栏管理</h1>
                     <p className="mt-2 text-muted-foreground">
-                        管理合作论文内容（支持中英日三语）
+                        管理新闻专栏内容（支持中英日三语）
                     </p>
                 </div>
                 <button
@@ -261,7 +316,7 @@ export default function PapersManagementPage() {
                     className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer"
                 >
                     <Plus className="h-4 w-4" />
-                    添加合作论文
+                    添加新闻专栏
                 </button>
             </div>
 
@@ -285,7 +340,7 @@ export default function PapersManagementPage() {
                     <div className="w-full max-w-4xl rounded-xl border border-border bg-card p-6 max-h-[90vh] overflow-y-auto">
                         <div className="mb-6 flex items-center justify-between">
                             <h2 className="text-xl font-bold text-foreground">
-                                {editingId ? "编辑合作论文" : "添加新合作论文"}
+                                {editingId ? "编辑新闻专栏" : "添加新新闻专栏"}
                             </h2>
                             <button
                                 onClick={resetForm}
@@ -354,7 +409,7 @@ export default function PapersManagementPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文标题（中文）*
+                                            标题（中文）*
                                         </label>
                                         <input
                                             type="text"
@@ -368,12 +423,12 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文介绍（中文）
+                                            新闻内容（中文）
                                         </label>
                                         <textarea
-                                            value={formData.description_zh}
+                                            value={formData.content_zh}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, description_zh: e.target.value })
+                                                setFormData({ ...formData, content_zh: e.target.value })
                                             }
                                             rows={6}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -382,14 +437,28 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            赞助企业（中文）
+                                            期刊名称（中文）
                                         </label>
                                         <input
                                             type="text"
-                                            value={formData.sponsor_zh}
+                                            value={formData.journal_name_zh}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, sponsor_zh: e.target.value })
+                                                setFormData({ ...formData, journal_name_zh: e.target.value })
                                             }
+                                            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-foreground">
+                                            作者简介（中文）
+                                        </label>
+                                        <textarea
+                                            value={formData.author_bio_zh}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, author_bio_zh: e.target.value })
+                                            }
+                                            rows={4}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                         />
                                     </div>
@@ -401,7 +470,7 @@ export default function PapersManagementPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文标题（英文）*
+                                            标题（英文）*
                                         </label>
                                         <input
                                             type="text"
@@ -415,12 +484,12 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文介绍（英文）
+                                            新闻内容（英文）
                                         </label>
                                         <textarea
-                                            value={formData.description_en}
+                                            value={formData.content_en}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, description_en: e.target.value })
+                                                setFormData({ ...formData, content_en: e.target.value })
                                             }
                                             rows={6}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -429,14 +498,28 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            赞助企业（英文）
+                                            期刊名称（英文）
                                         </label>
                                         <input
                                             type="text"
-                                            value={formData.sponsor_en}
+                                            value={formData.journal_name_en}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, sponsor_en: e.target.value })
+                                                setFormData({ ...formData, journal_name_en: e.target.value })
                                             }
+                                            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-foreground">
+                                            作者简介（英文）
+                                        </label>
+                                        <textarea
+                                            value={formData.author_bio_en}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, author_bio_en: e.target.value })
+                                            }
+                                            rows={4}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                         />
                                     </div>
@@ -448,7 +531,7 @@ export default function PapersManagementPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文标题（日文）*
+                                            标题（日文）*
                                         </label>
                                         <input
                                             type="text"
@@ -462,12 +545,12 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            论文介绍（日文）
+                                            新闻内容（日文）
                                         </label>
                                         <textarea
-                                            value={formData.description_ja}
+                                            value={formData.content_ja}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, description_ja: e.target.value })
+                                                setFormData({ ...formData, content_ja: e.target.value })
                                             }
                                             rows={6}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -476,14 +559,28 @@ export default function PapersManagementPage() {
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-foreground">
-                                            赞助企业（日文）
+                                            期刊名称（日文）
                                         </label>
                                         <input
                                             type="text"
-                                            value={formData.sponsor_ja}
+                                            value={formData.journal_name_ja}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, sponsor_ja: e.target.value })
+                                                setFormData({ ...formData, journal_name_ja: e.target.value })
                                             }
+                                            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-foreground">
+                                            作者简介（日文）
+                                        </label>
+                                        <textarea
+                                            value={formData.author_bio_ja}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, author_bio_ja: e.target.value })
+                                            }
+                                            rows={4}
                                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                         />
                                     </div>
@@ -496,60 +593,29 @@ export default function PapersManagementPage() {
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-foreground">
-                                        论文作者
+                                        发表时间
                                     </label>
                                     <input
-                                        type="text"
-                                        value={formData.author}
+                                        type="month"
+                                        value={formData.publish_date}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, author: e.target.value })
+                                            setFormData({ ...formData, publish_date: e.target.value })
                                         }
-                                        placeholder="作者姓名"
                                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                     />
                                 </div>
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-foreground">
-                                        期刊名称
+                                        系列期数 *
                                     </label>
                                     <input
-                                        type="text"
-                                        value={formData.journal_name}
+                                        type="number"
+                                        value={formData.series_number}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, journal_name: e.target.value })
+                                            setFormData({ ...formData, series_number: e.target.value })
                                         }
-                                        placeholder="期刊名称"
-                                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-foreground">
-                                        论文链接
-                                    </label>
-                                    <input
-                                        type="url"
-                                        value={formData.paper_link}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, paper_link: e.target.value })
-                                        }
-                                        placeholder="https://..."
-                                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-foreground">
-                                        赞助企业链接
-                                    </label>
-                                    <input
-                                        type="url"
-                                        value={formData.sponsor_link}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, sponsor_link: e.target.value })
-                                        }
-                                        placeholder="https://..."
+                                        min="1"
                                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                     />
                                 </div>
@@ -557,8 +623,8 @@ export default function PapersManagementPage() {
                                 <ImageUpload
                                     value={formData.image}
                                     onChange={(url) => setFormData({ ...formData, image: url })}
-                                    folder="papers"
-                                    label="论文图片"
+                                    folder="news-columns"
+                                    label="图片"
                                 />
                             </div>
 
@@ -593,7 +659,7 @@ export default function PapersManagementPage() {
                             确认删除
                         </h3>
                         <p className="text-sm text-muted-foreground mb-6">
-                            确定要删除这篇合作论文吗？此操作无法撤销。
+                            确定要删除这个新闻专栏吗？此操作无法撤销。
                         </p>
                         <div className="flex gap-3">
                             <button
@@ -613,7 +679,7 @@ export default function PapersManagementPage() {
                 </div>
             )}
 
-            {/* Papers Table */}
+            {/* News Columns Table */}
             <div className="rounded-xl border border-border bg-card">
                 <div className="overflow-x-auto">
                     <table className="w-full">
@@ -623,10 +689,13 @@ export default function PapersManagementPage() {
                                     标题（中文）
                                 </th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    作者
+                                    期刊名称
                                 </th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                                    赞助企业
+                                    发表时间
+                                </th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                                    期数
                                 </th>
                                 <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
                                     操作
@@ -634,69 +703,48 @@ export default function PapersManagementPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {papers.length === 0 ? (
+                            {newsColumns.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan={4}
+                                        colSpan={5}
                                         className="px-6 py-12 text-center text-muted-foreground"
                                     >
-                                        未找到合作论文。点击"添加合作论文"创建一个。
+                                        未找到新闻专栏。点击"添加新闻专栏"创建一个。
                                     </td>
                                 </tr>
                             ) : (
-                                papers.map((paper) => (
+                                newsColumns.map((newsColumn) => (
                                     <tr
-                                        key={paper.id}
+                                        key={newsColumn.id}
                                         className="border-b border-border transition-colors hover:bg-muted/50"
                                     >
                                         <td className="px-6 py-4">
-                                            {paper.paper_link ? (
-                                                <a
-                                                    href={paper.paper_link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="font-medium text-primary hover:underline cursor-pointer"
-                                                >
-                                                    {paper.title_zh}
-                                                </a>
-                                            ) : (
-                                                <div className="font-medium text-foreground">
-                                                    {paper.title_zh}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-muted-foreground">
-                                                {paper.author || "-"}
+                                            <div className="font-medium text-foreground">
+                                                {newsColumn.title_zh}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            {paper.sponsor_link ? (
-                                                <a
-                                                    href={paper.sponsor_link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-sm text-primary hover:underline cursor-pointer"
-                                                >
-                                                    {paper.sponsor_zh || "-"}
-                                                </a>
-                                            ) : (
-                                                <div className="text-sm text-muted-foreground">
-                                                    {paper.sponsor_zh || "-"}
-                                                </div>
-                                            )}
+                                            <div className="text-sm text-muted-foreground">
+                                                {newsColumn.journal_name_zh}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-muted-foreground">
+                                            {formatPublishDate(newsColumn.publish_date)}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-muted-foreground">
+                                            第{newsColumn.series_number}期
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
-                                                    onClick={() => handleEdit(paper)}
+                                                    onClick={() => handleEdit(newsColumn)}
                                                     className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10 cursor-pointer"
                                                     title="编辑"
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(paper.id)}
+                                                    onClick={() => handleDelete(newsColumn.id)}
                                                     className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-500/10 cursor-pointer"
                                                     title="删除"
                                                 >
