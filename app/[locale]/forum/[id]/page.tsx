@@ -98,9 +98,6 @@ export default async function InvitationDetailPage({ params }: PageProps) {
   const institution = locale === "zh" ? invitation.speaker_institution_zh : locale === "ja" ? invitation.speaker_institution_ja : invitation.speaker_institution_en;
   const abstract = locale === "zh" ? invitation.abstract_zh : locale === "ja" ? invitation.abstract_ja : invitation.abstract_en;
 
-  const backText = locale === "zh" ? "返回列表" : locale === "ja" ? "リストに戻る" : "Back to List";
-  const abstractTitle = locale === "zh" ? "报告摘要" : locale === "ja" ? "講演概要" : "Abstract";
-
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -139,7 +136,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        {backText}
+        {t.common.backToList}
       </Link>
 
       {/* Title and Meta Information */}
@@ -162,7 +159,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
             <User className="h-5 w-5 text-muted-foreground flex-shrink-0" />
             <span className="text-foreground">
               <span className="font-medium">
-                {locale === "zh" ? "主讲人：" : locale === "ja" ? "講演者：" : "Speaker: "}
+                {t.common.speakerLabel}
               </span>
               {speaker}
             </span>
@@ -174,7 +171,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
               <Building2 className="h-5 w-5 text-muted-foreground flex-shrink-0" />
               <span className="text-foreground">
                 <span className="font-medium">
-                  {locale === "zh" ? "主讲人单位：" : locale === "ja" ? "所属機関：" : "Institution: "}
+                  {t.common.institutionLabel}
                 </span>
                 {invitation.speaker_institution_link ? (
                   <a
@@ -198,7 +195,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
               <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" />
               <span className="text-foreground">
                 <span className="font-medium">
-                  {locale === "zh" ? "报告时间：" : locale === "ja" ? "日時：" : "Date: "}
+                  {t.common.dateLabel}
                 </span>
                 {formatDate(invitation.event_time)}
               </span>
@@ -218,7 +215,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
       {/* Abstract */}
       {abstract && (
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold text-foreground">{abstractTitle}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t.common.abstract}</h2>
           <div className="prose prose-neutral dark:prose-invert max-w-none">
             {abstract.split('\n').filter(para => para.trim()).map((paragraph, index) => (
               <p key={index} className="text-base leading-relaxed text-foreground indent-8 mb-4 last:mb-0">

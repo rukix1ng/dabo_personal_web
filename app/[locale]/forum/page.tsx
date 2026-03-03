@@ -156,7 +156,7 @@ export default async function ForumPage({ params }: PageProps) {
           <div className="flex flex-col gap-6">
             {invitations.length === 0 ? (
               <p className="text-center text-muted-foreground py-12">
-                {locale === 'zh' ? '暂无邀请报告' : locale === 'ja' ? '招待講演はありません' : 'No invited talks yet'}
+                {t.forum.noInvitations}
               </p>
             ) : (
               invitations.map((invitation, index) => (

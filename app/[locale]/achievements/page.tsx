@@ -125,7 +125,7 @@ export default async function AchievementsPage({ params }: PageProps) {
         <div className="grid gap-6 lg:grid-cols-1">
           {newsColumns.length === 0 ? (
             <p className="py-12 text-center text-muted-foreground">
-              {locale === 'zh' ? '暂无新闻专栏' : locale === 'ja' ? 'ニュースコラムはありません' : 'No news columns yet'}
+              {t.achievements.noNewsColumns}
             </p>
           ) : (
             newsColumns.map((item, index) => {

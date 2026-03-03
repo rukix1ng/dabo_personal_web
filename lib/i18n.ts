@@ -145,6 +145,16 @@ export const content = {
         "Featured in university research highlights and science media",
       ],
     },
+    common: {
+      backToList: "Back to List",
+      noData: "No data available",
+      loading: "Loading...",
+      authorBio: "About the Author",
+      abstract: "Abstract",
+      speakerLabel: "Speaker: ",
+      institutionLabel: "Institution: ",
+      dateLabel: "Date: ",
+    },
     navigation: {
       overview: "Overview",
       bio: "Biography",
@@ -180,6 +190,7 @@ export const content = {
       viewDetails: "View Details",
       introduction: "Introduction",
       backToList: "Back to Forum List",
+      noInvitations: "No invited talks yet",
     },
     achievements: {
       mediaReports: {
@@ -226,6 +237,7 @@ export const content = {
           { year: "2016", name: "Excellent Presentation Award, Joint Symposium on Multi-field Measurements Executive Committee" },
         ],
       },
+      noNewsColumns: "No news columns yet",
     },
   },
   zh: {
@@ -363,6 +375,16 @@ export const content = {
         "高校科研动态与科普媒体报道",
       ],
     },
+    common: {
+      backToList: "返回列表",
+      noData: "暂无数据",
+      loading: "加载中...",
+      authorBio: "作者简介",
+      abstract: "报告摘要",
+      speakerLabel: "主讲人：",
+      institutionLabel: "主讲人单位：",
+      dateLabel: "报告时间：",
+    },
     navigation: {
       overview: "概览",
       bio: "简介",
@@ -398,6 +420,7 @@ export const content = {
       viewDetails: "查看详情",
       introduction: "论坛介绍",
       backToList: "返回论坛列表",
+      noInvitations: "暂无邀请报告",
     },
     achievements: {
       mediaReports: {
@@ -444,6 +467,7 @@ export const content = {
           { year: "2016年", name: "优秀发表赏 -- 日本多领域测量联合研讨会执行委员会" },
         ],
       },
+      noNewsColumns: "暂无新闻专栏",
     },
   },
   ja: {
@@ -581,6 +605,16 @@ export const content = {
         "大学研究ニュースおよび科学メディアに掲載",
       ],
     },
+    common: {
+      backToList: "リストに戻る",
+      noData: "データがありません",
+      loading: "読み込み中...",
+      authorBio: "著者紹介",
+      abstract: "講演概要",
+      speakerLabel: "講演者：",
+      institutionLabel: "所属機関：",
+      dateLabel: "日時：",
+    },
     navigation: {
       overview: "概要",
       bio: "バイオ",
@@ -616,6 +650,7 @@ export const content = {
       viewDetails: "詳細を見る",
       introduction: "紹介",
       backToList: "フォーラムリストに戻る",
+      noInvitations: "招待講演はありません",
     },
     achievements: {
       mediaReports: {
@@ -662,6 +697,7 @@ export const content = {
           { year: "2016年", name: "優秀発表賞 -- 日本多分野測定合同シンポジウム実行委員会" },
         ],
       },
+      noNewsColumns: "ニュースコラムはありません",
     },
   },
 } as const satisfies Record<Locale, unknown>;

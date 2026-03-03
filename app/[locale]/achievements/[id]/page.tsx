@@ -112,9 +112,6 @@ export default async function NewsColumnDetailPage({ params }: PageProps) {
   const dateDisplay = formatPublishDate(item.publish_date, locale);
   const seriesTag = formatSeriesTag(item.series_number, locale);
 
-  const backText = locale === 'zh' ? '返回列表' : locale === 'ja' ? 'リストに戻る' : 'Back to List';
-  const authorLabel = locale === 'zh' ? '作者简介' : locale === 'ja' ? '著者紹介' : 'About the Author';
-
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
       {/* Back Button */}
@@ -123,7 +120,7 @@ export default async function NewsColumnDetailPage({ params }: PageProps) {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        {backText}
+        {t.common.backToList}
       </Link>
 
       {/* Header */}
@@ -177,7 +174,7 @@ export default async function NewsColumnDetailPage({ params }: PageProps) {
         <div className="flex flex-col gap-3 rounded-xl border border-border/50 bg-muted/30 p-5">
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <BookOpen className="h-4 w-4 text-primary" />
-            {authorLabel}
+            {t.common.authorBio}
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {authorBio}
