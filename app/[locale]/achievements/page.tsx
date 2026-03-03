@@ -4,6 +4,9 @@ import { MediaImage } from "@/components/media-image";
 import type { Metadata } from "next";
 import { query } from "@/lib/db";
 
+// 启用增量静态再生成，5分钟缓存
+export const revalidate = 300;
+
 type PageProps = {
   params: Promise<{ locale: Locale }>;
 };
@@ -66,7 +69,13 @@ interface NewsColumn {
 async function getNewsColumns(): Promise<NewsColumn[]> {
   try {
     const newsColumns = await query<any>(
-      'SELECT * FROM news_column ORDER BY series_number DESC, id DESC'
+      `SELECT id, title_en, title_zh, title_ja,
+              content_en, content_zh, content_ja,
+              journal_name_en, journal_name_zh, journal_name_ja,
+              author_bio_en, author_bio_zh, author_bio_ja,
+              publish_date, series_number, image
+       FROM news_column
+       ORDER BY series_number DESC, id DESC`
     );
     return newsColumns || [];
   } catch (error) {

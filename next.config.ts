@@ -9,8 +9,9 @@ const nextConfig: NextConfig = {
     // Disable AVIF to save CPU (it's very expensive to compress)
     formats: ['image/webp'],
     // Reduce number of device sizes to generate fewer variants
-    deviceSizes: [640, 750, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96],
+    deviceSizes: [640, 1080, 1920], // 减少到3个尺寸以降低CPU负载
+    imageSizes: [32, 64, 96], // 减少到3个尺寸
+    minimumCacheTTL: 86400, // 缓存24小时
     // Allow images from Qiniu cloud storage
     remotePatterns: [
       {

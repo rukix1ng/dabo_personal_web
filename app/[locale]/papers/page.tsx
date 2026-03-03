@@ -3,9 +3,8 @@ import { PapersPageClient } from "./papers-client";
 import { query } from "@/lib/db";
 import type { Metadata } from "next";
 
-// Force dynamic rendering - don't try to build this page statically
-// This prevents database connections during build time
-export const dynamic = 'force-dynamic';
+// 启用增量静态再生成，5分钟缓存
+export const revalidate = 300;
 
 type PageProps = {
   params: Promise<{ locale: Locale }>;
@@ -83,7 +82,13 @@ interface TransformedPaper {
 async function getPapers(locale: Locale): Promise<TransformedPaper[]> {
   try {
     const papers = await query<Paper>(
-      'SELECT * FROM papers ORDER BY created_at DESC'
+      `SELECT id, title_en, title_zh, title_ja,
+              author, journal_name, image,
+              description_en, description_zh, description_ja,
+              paper_link, sponsor_en, sponsor_zh, sponsor_ja,
+              sponsor_link, created_at, updated_at
+       FROM papers
+       ORDER BY created_at DESC`
     );
 
     // Transform database records to Paper format

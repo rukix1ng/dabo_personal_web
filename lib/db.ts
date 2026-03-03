@@ -9,8 +9,8 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'personal_web',
     waitForConnections: true,
-    connectionLimit: 10, // Max 10 concurrent connections
-    queueLimit: 0, // Unlimited queue
+    connectionLimit: 20, // 增加到20个并发连接
+    queueLimit: 50, // 限制队列长度，避免无限排队
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
     connectTimeout: 10000, // 10 seconds

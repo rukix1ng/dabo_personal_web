@@ -11,7 +11,13 @@ export async function GET(request: NextRequest) {
         }
 
         const newsColumns = await query<any>(
-            'SELECT * FROM news_column ORDER BY series_number DESC, publish_date DESC, id DESC'
+            `SELECT id, title_en, title_zh, title_ja,
+                    content_en, content_zh, content_ja,
+                    journal_name_en, journal_name_zh, journal_name_ja,
+                    author_bio_en, author_bio_zh, author_bio_ja,
+                    publish_date, series_number, image, created_at, updated_at
+             FROM news_column
+             ORDER BY series_number DESC, publish_date DESC, id DESC`
         );
 
         return NextResponse.json({ newsColumns });
