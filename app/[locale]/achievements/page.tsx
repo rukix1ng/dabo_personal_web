@@ -147,6 +147,7 @@ export default async function AchievementsPage({ params }: PageProps) {
                       alt={title}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 512px, 600px"
                       className="transition-transform duration-500 group-hover:scale-105"
+                      priority={index === 0}
                     />
                     <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>

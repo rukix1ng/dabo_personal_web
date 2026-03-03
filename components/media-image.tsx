@@ -12,9 +12,10 @@ interface MediaImageProps {
   sizes?: string;
   gallery?: { src: string; alt: string }[];
   initialIndex?: number;
+  priority?: boolean;
 }
 
-export function MediaImage({ src, alt, className, sizes, gallery, initialIndex = 0 }: MediaImageProps) {
+export function MediaImage({ src, alt, className, sizes, gallery, initialIndex = 0, priority = false }: MediaImageProps) {
   const [hasError, setHasError] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -128,7 +129,8 @@ export function MediaImage({ src, alt, className, sizes, gallery, initialIndex =
           onError={() => setHasError(true)}
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
-          loading="lazy"
+          loading={priority ? undefined : "lazy"}
+          priority={priority}
           quality={75}
         />
         {/* Hover icon indicator */}
