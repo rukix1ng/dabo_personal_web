@@ -38,10 +38,22 @@ export async function POST(request: NextRequest) {
     const body: TranslateRequest = await request.json();
     const { texts, fieldName } = body;
 
-    console.log('Translation request:', { texts, fieldName });
+    console.log('=== Translation Request Debug ===');
     console.log('API Key exists:', !!VOLCANO_API_KEY);
+    console.log('API Key length:', VOLCANO_API_KEY.length);
+    console.log('API Key preview:', VOLCANO_API_KEY.substring(0, 10) + '...');
     console.log('Endpoint:', VOLCANO_ENDPOINT);
     console.log('Model ID:', VOLCANO_MODEL_ID);
+    console.log('Request body:', { texts, fieldName });
+    console.log('================================');
+
+    if (!VOLCANO_API_KEY) {
+      console.error('VOLCANO_API_KEY is not set!');
+      return NextResponse.json(
+        { error: '翻译服务配置错误：API Key 未设置', debug: 'VOLCANO_API_KEY is empty' },
+        { status: 500 }
+      );
+    }
 
     // 检测已填写的语言
     const filledLanguages: string[] = [];
