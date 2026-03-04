@@ -168,11 +168,26 @@ export default async function NewsColumnDetailPage({ params }: PageProps) {
       {/* Content */}
       {contentText && (
         <div className="flex flex-col gap-4">
-          {contentText.split('\n').filter(para => para.trim()).map((paragraph, index) => (
-            <p key={index} className="text-base leading-relaxed text-foreground indent-8">
-              {paragraph}
-            </p>
-          ))}
+          {contentText.split('\n').filter(para => para.trim()).map((paragraph, index) => {
+            // 检查是否是小标题（以——开头）
+            const isSubtitle = paragraph.trim().startsWith('——');
+
+            if (isSubtitle) {
+              // 小标题样式：加粗、左对齐、无缩进
+              return (
+                <h3 key={index} className="text-base font-bold leading-relaxed text-foreground mt-2">
+                  {paragraph}
+                </h3>
+              );
+            }
+
+            // 普通段落：首行缩进
+            return (
+              <p key={index} className="text-base leading-relaxed text-foreground indent-8">
+                {paragraph}
+              </p>
+            );
+          })}
         </div>
       )}
 
