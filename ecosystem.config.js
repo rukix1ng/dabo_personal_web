@@ -30,7 +30,11 @@ module.exports = {
             PORT: 3000,
             NEXT_PUBLIC_BASE_URL: 'http://47.110.87.81:3000',
             // 增加 Node.js 内存使用限制到1G
-            NODE_OPTIONS: '--max-old-space-size=1024'
+            NODE_OPTIONS: '--max-old-space-size=1024',
+            // Volcano Engine AI Translation
+            VOLCANO_API_KEY: '226c19f8-17b0-4088-9847-ee7fd41134f4',
+            VOLCANO_ENDPOINT: 'https://ark.cn-beijing.volces.com/api/v3/responses',
+            VOLCANO_MODEL_ID: 'glm-4-7-251222'
         },
         error_file: './logs/err.log',
         out_file: './logs/out.log',
