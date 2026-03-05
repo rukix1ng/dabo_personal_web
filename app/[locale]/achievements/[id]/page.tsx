@@ -129,12 +129,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             },
           ]
         : undefined,
-      article: {
-        publishedTime: item.publish_date ? new Date(item.publish_date).toISOString() : undefined,
-        authors: [journalName || t.meta.title],
-        section: t.navigation.achievements,
-        tags: ["news", "media", "research"],
-      },
+      publishedTime: item.publish_date ? new Date(item.publish_date).toISOString() : undefined,
+      authors: [journalName || t.meta.title],
+      section: t.navigation.achievements,
+      tags: ["news", "media", "research"],
     },
     twitter: {
       card: "summary_large_image",

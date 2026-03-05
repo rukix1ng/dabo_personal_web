@@ -114,12 +114,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             },
           ]
         : undefined,
-      article: {
-        publishedTime: invitation.event_time ? new Date(invitation.event_time).toISOString() : undefined,
-        authors: [speaker],
-        section: t.forum.title,
-        tags: ["lecture", "seminar", "academic"],
-      },
+      publishedTime: invitation.event_time ? new Date(invitation.event_time).toISOString() : undefined,
+      authors: [speaker],
+      section: t.forum.title,
+      tags: ["lecture", "seminar", "academic"],
     },
     twitter: {
       card: "summary_large_image",
