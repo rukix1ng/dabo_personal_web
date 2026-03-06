@@ -12,15 +12,18 @@ export const localeLabels: Record<Locale, string> = {
 export const content = {
   en: {
     meta: {
-      title: "Academic Profile | Theoretical Physics & Semiconductors",
+      title: "High-Performance Materials for Semiconductor Equipment | NIMS-Lam Research Project",
       description:
-        "Academic homepage focused on theoretical physics and semiconductor research, featuring biography, projects, and contact details.",
+        "Research project on high-performance materials for semiconductor manufacturing equipment, supported by Lam Research and NIMS. Focus on electron sources, optical components, and structural materials for next-generation semiconductor equipment.",
       keywords: [
-        "theoretical physics",
-        "semiconductor research",
-        "quantum materials",
-        "academic profile",
-        "researcher",
+        "semiconductor equipment",
+        "semiconductor materials",
+        "Lam Research",
+        "NIMS",
+        "electron beam materials",
+        "etching equipment",
+        "materials research",
+        "industry-academia collaboration",
       ],
     },
     hero: {
@@ -243,15 +246,18 @@ export const content = {
   },
   zh: {
     meta: {
-      title: "学术主页｜理论物理与半导体研究",
+      title: "面向半导体装备的高性能材料研究 | NIMS-泛林集团合作项目",
       description:
-        "以理论物理与半导体研究为主题的学术主页，包含个人简介、项目与联系方式。",
+        "半导体制造装备高性能材料研究项目，由泛林集团（Lam Research）与日本物质材料研究机构（NIMS）合作支持。聚焦电子源、光学元件、结构材料等关键材料，推动新一代半导体装备发展。",
       keywords: [
-        "理论物理",
-        "半导体研究",
-        "量子材料",
-        "学术主页",
-        "科研",
+        "半导体装备",
+        "半导体材料",
+        "泛林集团",
+        "NIMS",
+        "电子束材料",
+        "刻蚀装备",
+        "材料研究",
+        "产学合作",
       ],
     },
     hero: {
@@ -474,15 +480,18 @@ export const content = {
   },
   ja: {
     meta: {
-      title: "研究者ページ｜理論物理と半導体研究",
+      title: "半導体製造装置向け高性能材料研究 | NIMS-ラムリサーチ共同プロジェクト",
       description:
-        "理論物理と半導体研究に焦点を当てた研究者ページ。略歴、プロジェクト、連絡先を掲載。",
+        "ラムリサーチ（Lam Research）と物質・材料研究機構（NIMS）が支援する半導体製造装置向け高性能材料研究プロジェクト。電子源、光学部品、構造材料など次世代半導体装置の重要材料に焦点を当てています。",
       keywords: [
-        "理論物理",
-        "半導体研究",
-        "量子材料",
-        "研究者ページ",
-        "学術",
+        "半導体装置",
+        "半導体材料",
+        "ラムリサーチ",
+        "NIMS",
+        "電子ビーム材料",
+        "エッチング装置",
+        "材料研究",
+        "産学連携",
       ],
     },
     hero: {

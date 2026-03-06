@@ -112,34 +112,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ja: `/ja/achievements/${id}`,
       },
     },
-    openGraph: {
-      title: `${title} | ${t.navigation.achievements}`,
-      description: description?.substring(0, 160) || title,
-      type: "article",
-      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
-      url: `${baseUrl}/${locale}/achievements/${id}`,
-      siteName: t.meta.title,
-      images: item.image
-        ? [
-            {
-              url: item.image,
-              width: 1200,
-              height: 630,
-              alt: title,
-            },
-          ]
-        : undefined,
-      publishedTime: item.publish_date ? new Date(item.publish_date).toISOString() : undefined,
-      authors: [journalName || t.meta.title],
-      section: t.navigation.achievements,
-      tags: ["news", "media", "research"],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | ${t.navigation.achievements}`,
-      description: description?.substring(0, 160) || title,
-      images: item.image ? [item.image] : undefined,
-    },
   };
 }
 

@@ -30,18 +30,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ja: "/ja",
       },
     },
-    openGraph: {
-      title: t.meta.title,
-      description: t.meta.description,
-      type: "profile",
-      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
-      url: `/${locale}`,
-    },
-    twitter: {
-      card: "summary",
-      title: t.meta.title,
-      description: t.meta.description,
-    },
   };
 }
 

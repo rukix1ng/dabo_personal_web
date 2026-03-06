@@ -32,18 +32,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ja: "/ja/forum",
       },
     },
-    openGraph: {
-      title: `${t.forum.title} | ${t.meta.title}`,
-      description: `${t.forum.title} - ${t.meta.description}`,
-      type: "website",
-      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
-      url: `/${locale}/forum`,
-    },
-    twitter: {
-      card: "summary",
-      title: `${t.forum.title} | ${t.meta.title}`,
-      description: `${t.forum.title} - ${t.meta.description}`,
-    },
   };
 }
 

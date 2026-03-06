@@ -97,34 +97,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ja: `/ja/forum/${id}`,
       },
     },
-    openGraph: {
-      title: `${title} | ${t.forum.title}`,
-      description: abstract || title,
-      type: "article",
-      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
-      url: `${baseUrl}/${locale}/forum/${id}`,
-      siteName: t.meta.title,
-      images: invitation.image
-        ? [
-            {
-              url: invitation.image,
-              width: 1200,
-              height: 630,
-              alt: title,
-            },
-          ]
-        : undefined,
-      publishedTime: invitation.event_time ? new Date(invitation.event_time).toISOString() : undefined,
-      authors: [speaker],
-      section: t.forum.title,
-      tags: ["lecture", "seminar", "academic"],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | ${t.forum.title}`,
-      description: abstract || title,
-      images: invitation.image ? [invitation.image] : undefined,
-    },
   };
 }
 

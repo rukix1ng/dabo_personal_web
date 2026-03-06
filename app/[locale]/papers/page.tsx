@@ -31,18 +31,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ja: "/ja/papers",
       },
     },
-    openGraph: {
-      title: `${t.papers.title} | ${t.meta.title}`,
-      description: t.papers.description,
-      type: "website",
-      locale: locale === "en" ? "en_US" : locale === "zh" ? "zh_CN" : "ja_JP",
-      url: `/${locale}/papers`,
-    },
-    twitter: {
-      card: "summary",
-      title: `${t.papers.title} | ${t.meta.title}`,
-      description: t.papers.description,
-    },
   };
 }
 
