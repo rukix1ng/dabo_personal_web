@@ -42,7 +42,7 @@ async function getDynamicIds() {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://47.110.87.81';
 
   // Static pages
   const staticPages = [
