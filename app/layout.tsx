@@ -40,21 +40,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "/",
-    siteName: "Academic Profile",
-    title: "Academic Profile - Semiconductor Research",
-    description:
-      "Academic homepage focused on theoretical physics and semiconductor research.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Academic Profile - Semiconductor Research",
-    description:
-      "Academic homepage focused on theoretical physics and semiconductor research.",
-  },
   robots: {
     index: true,
     follow: true,
