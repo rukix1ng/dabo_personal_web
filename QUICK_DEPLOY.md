@@ -53,13 +53,19 @@ ssh root@47.110.87.81
 
 # 重启PM2
 cd /var/www/dabo_personal
-pm2 restart dabo-personal
+pm2 restart ecosystem.config.js --only dabo-personal --update-env
 
 # 查看日志
 pm2 logs dabo-personal --lines 30
 
 # 实时监控
 pm2 monit
+```
+
+如果这次部署包含图片上传功能，请先确认七牛环境变量已经存在：
+
+```bash
+grep '^QINIU_' /var/www/dabo_personal/.env.local
 ```
 
 ## 📊 验证优化效果
@@ -99,8 +105,13 @@ pm2 describe dabo-personal | grep cpu
 ### 如果服务无法启动：
 1. 检查构建是否成功：`ls -la .next/`
 2. 查看错误日志：`pm2 logs dabo-personal --err`
-3. 验证环境变量：`pm2 env dabo-personal`
+3. 验证环境变量：`grep '^QINIU_' /var/www/dabo_personal/.env.local`
 4. 回滚到备份版本
+
+### 如果图片上传报500：
+1. 检查七牛配置是否存在：`grep '^QINIU_' /var/www/dabo_personal/.env.local`
+2. 重启时带上环境刷新：`pm2 restart ecosystem.config.js --only dabo-personal --update-env`
+3. 查看最近日志：`pm2 logs dabo-personal --lines 50 --nostream`
 
 ### 如果内存不足：
 1. 检查是否有内存泄漏

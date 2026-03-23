@@ -85,6 +85,21 @@ cp .env.production .env.local
 nano .env.local
 ```
 
+图片上传依赖七牛云配置，请确认 `.env.local` 至少包含以下变量：
+
+```bash
+QINIU_ACCESS_KEY=your-access-key
+QINIU_SECRET_KEY=your-secret-key
+QINIU_BUCKET=dabowebsite
+QINIU_DOMAIN=http://tb7l8osfp.hd-bkt.clouddn.com
+```
+
+可用下面的命令快速检查：
+
+```bash
+grep '^QINIU_' .env.local
+```
+
 #### 5. 启动应用
 
 ```bash
@@ -100,6 +115,12 @@ pm2 save
 # 配置开机自启
 pm2 startup
 # 按照提示执行输出的命令
+```
+
+如果你刚修改过 `.env.local`，请使用下面的命令重启，确保最新环境变量生效：
+
+```bash
+pm2 restart ecosystem.config.js --only dabo-personal --update-env
 ```
 
 #### 6. 配置 Nginx（可选）
@@ -169,7 +190,7 @@ cd /var/www/dabo_personal
 git pull  # 如使用 Git
 npm install
 npm run build
-pm2 restart dabo-personal
+pm2 restart ecosystem.config.js --only dabo-personal --update-env
 ```
 
 ### 查看日志
@@ -246,7 +267,20 @@ npm install
 npm run build
 ```
 
-### 4. Nginx 502 错误
+### 4. 图片上传返回 500
+
+如果管理后台上传图片时报 `Storage service not configured` 或 500，优先检查七牛环境变量：
+
+```bash
+cd /var/www/dabo_personal
+grep '^QINIU_' .env.local .env.production
+pm2 restart ecosystem.config.js --only dabo-personal --update-env
+pm2 logs dabo-personal --lines 50 --nostream
+```
+
+如果 `grep` 没有输出，说明服务器环境文件里缺少七牛配置，需要先补齐 `QINIU_ACCESS_KEY`、`QINIU_SECRET_KEY`、`QINIU_BUCKET`、`QINIU_DOMAIN`。
+
+### 5. Nginx 502 错误
 
 检查 Next.js 应用是否运行：
 ```bash
