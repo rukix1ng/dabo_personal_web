@@ -40,6 +40,7 @@ type InvitationRecord = {
   title_zh: string;
   title_ja: string;
   image: string | null;
+  poster: string | null;
   event_time: string | null;
 };
 
