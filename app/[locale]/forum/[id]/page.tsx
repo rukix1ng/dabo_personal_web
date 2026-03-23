@@ -33,6 +33,7 @@ interface Invitation {
   abstract_ja: string | null;
   event_time: string | null;
   image: string | null;
+  poster: string | null;
   video_link: string | null;
 }
 
@@ -42,7 +43,7 @@ async function getInvitation(id: string): Promise<Invitation | null> {
       `SELECT id, title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
               title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
               title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
-              event_time, image, video_link
+              event_time, image, poster, video_link
        FROM invitation
        WHERE id = ?`,
       [parseInt(id)]
@@ -294,10 +295,14 @@ export default async function InvitationDetailPage({ params }: PageProps) {
       </div>
       </div>
 
-      {/* Bilibili Video Player */}
-      {invitation.video_link && (
-        <div className="w-full">
-          <BilibiliPlayer bvid={invitation.video_link} title={title} />
+      {/* Poster */}
+      {invitation.poster && (
+        <div className="w-full overflow-hidden rounded-lg border border-border">
+          <img
+            src={invitation.poster}
+            alt={`${title} poster`}
+            className="w-full h-auto object-contain"
+          />
         </div>
       )}
 
@@ -314,6 +319,13 @@ export default async function InvitationDetailPage({ params }: PageProps) {
           </div>
         </div>
       )}
+
+      {/* Bilibili Video Player - Hidden */}
+      {/* {invitation.video_link && (
+        <div className="w-full">
+          <BilibiliPlayer bvid={invitation.video_link} title={title} />
+        </div>
+      )} */}
     </main>
   );
 }

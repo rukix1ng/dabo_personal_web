@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
             `SELECT id, title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
                     title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
                     title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
-                    event_time, image, video_link
+                    event_time, image, poster, video_link
              FROM invitation
              WHERE id = ?`,
             [parseInt(id)]

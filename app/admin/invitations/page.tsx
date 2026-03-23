@@ -25,6 +25,7 @@ interface Invitation {
     abstract_ja: string | null;
     event_time: string | null;
     image: string | null;
+    poster: string | null;
     video_link: string | null;
     created_at: string;
     updated_at: string;
@@ -49,6 +50,7 @@ interface InvitationFormData {
     abstract_ja: string;
     event_time: string;
     image: string;
+    poster: string;
     video_link: string;
 }
 
@@ -88,6 +90,7 @@ export default function InvitationsManagementPage() {
         abstract_ja: "",
         event_time: "",
         image: "",
+        poster: "",
         video_link: "",
     });
 
@@ -242,6 +245,7 @@ export default function InvitationsManagementPage() {
             abstract_ja: invitation.abstract_ja || "",
             event_time: invitation.event_time ? invitation.event_time.substring(0, 16) : "",
             image: invitation.image || "",
+            poster: invitation.poster || "",
             video_link: invitation.video_link || "",
         });
         setShowForm(true);
@@ -799,6 +803,13 @@ export default function InvitationsManagementPage() {
                                     onChange={(url) => setFormData({ ...formData, image: url })}
                                     folder="invitations"
                                     label="图片"
+                                />
+
+                                <ImageUpload
+                                    value={formData.poster}
+                                    onChange={(url) => setFormData({ ...formData, poster: url })}
+                                    folder="invitations"
+                                    label="海报"
                                 />
 
                                 <div>
