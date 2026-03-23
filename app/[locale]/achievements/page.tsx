@@ -158,9 +158,10 @@ export default async function AchievementsPage({ params }: PageProps) {
                             {journalName}
                           </span>
                         )}
-                        <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-primary">
+                        {/* Series tag hidden */}
+                        {/* <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-primary">
                           {seriesTag}
-                        </span>
+                        </span> */}
                         {dateDisplay && (
                           <span className="text-[10px] font-medium text-muted-foreground/60">
                             {dateDisplay}
