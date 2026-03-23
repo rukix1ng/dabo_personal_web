@@ -39,6 +39,9 @@ type InvitationRecord = {
   title_en: string;
   title_zh: string;
   title_ja: string;
+  display_title_en: string | null;
+  display_title_zh: string | null;
+  display_title_ja: string | null;
   image: string | null;
   poster: string | null;
   event_time: string | null;
@@ -49,6 +52,9 @@ type NewsColumnRecord = {
   title_en: string;
   title_zh: string;
   title_ja: string;
+  display_title_en: string | null;
+  display_title_zh: string | null;
+  display_title_ja: string | null;
   image: string | null;
   publish_date: string | Date | null;
 };
@@ -58,6 +64,9 @@ type PaperRecord = {
   title_en: string;
   title_zh: string;
   title_ja: string;
+  display_title_en: string | null;
+  display_title_zh: string | null;
+  display_title_ja: string | null;
   image: string | null;
   created_at: string;
   paper_link: string | null;
@@ -82,11 +91,19 @@ type HomepageListItem = {
 
 function pickLocalizedTitle(
   locale: Locale,
-  record: { title_en: string; title_zh: string; title_ja: string }
+  record: {
+    title_en: string;
+    title_zh: string;
+    title_ja: string;
+    display_title_en?: string | null;
+    display_title_zh?: string | null;
+    display_title_ja?: string | null;
+  }
 ) {
-  if (locale === "zh") return record.title_zh;
-  if (locale === "ja") return record.title_ja;
-  return record.title_en;
+  // 优先使用 display_title，如果为空则使用原 title
+  if (locale === "zh") return record.display_title_zh || record.title_zh;
+  if (locale === "ja") return record.display_title_ja || record.title_ja;
+  return record.display_title_en || record.title_en;
 }
 
 function formatDateValue(value: string | Date | null) {
@@ -104,19 +121,19 @@ async function getHomepageProjectNews(locale: Locale): Promise<{
   try {
     const [invitations, newsColumns, papers] = await Promise.all([
       query<InvitationRecord>(
-        `SELECT id, title_en, title_zh, title_ja, image, poster, event_time
+        `SELECT id, title_en, title_zh, title_ja, display_title_en, display_title_zh, display_title_ja, image, poster, event_time
          FROM invitation
          ORDER BY event_time DESC, id DESC
          LIMIT 3`
       ),
       query<NewsColumnRecord>(
-        `SELECT id, title_en, title_zh, title_ja, image, publish_date
+        `SELECT id, title_en, title_zh, title_ja, display_title_en, display_title_zh, display_title_ja, image, publish_date
          FROM news_column
          ORDER BY series_number DESC, id DESC
          LIMIT 3`
       ),
       query<PaperRecord>(
-        `SELECT id, title_en, title_zh, title_ja, image, created_at, paper_link
+        `SELECT id, title_en, title_zh, title_ja, display_title_en, display_title_zh, display_title_ja, image, created_at, paper_link
          FROM papers
          ORDER BY created_at DESC, id DESC
          LIMIT 3`

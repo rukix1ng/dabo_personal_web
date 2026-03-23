@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
             `SELECT id, title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
                     title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
                     title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
+                    display_title_en, display_title_zh, display_title_ja,
                     event_time, image, poster, video_link, created_at, updated_at
              FROM invitation
              ORDER BY event_time DESC, id DESC`
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
             title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
             title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
             title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
+            display_title_en, display_title_zh, display_title_ja,
             event_time, image, poster, video_link
         } = body;
 
@@ -58,12 +60,14 @@ export async function POST(request: NextRequest) {
                 title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
                 title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
                 title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
+                display_title_en, display_title_zh, display_title_ja,
                 event_time, image, poster, video_link
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 title_en, subtitle_en || null, speaker_en, speaker_institution_en || null, abstract_en || null,
                 title_zh, subtitle_zh || null, speaker_zh, speaker_institution_zh || null, abstract_zh || null,
                 title_ja, subtitle_ja || null, speaker_ja, speaker_institution_ja || null, speaker_institution_link || null, abstract_ja || null,
+                display_title_en || null, display_title_zh || null, display_title_ja || null,
                 event_time || null, image || null, poster || null, video_link || null
             ]
         );
