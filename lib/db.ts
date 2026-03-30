@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql, { type RowDataPacket } from 'mysql2/promise';
 
 // Create a connection pool instead of a single connection
 // This handles reconnection automatically and allows multiple concurrent queries
@@ -8,6 +8,9 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'personal_web',
+    // Return DATE/DATETIME/TIMESTAMP as raw strings so app code can
+    // format "wall clock" values without implicit UTC conversion.
+    dateStrings: true,
     waitForConnections: true,
     connectionLimit: 20, // 增加到20个并发连接
     queueLimit: 50, // 限制队列长度，避免无限排队
@@ -22,7 +25,10 @@ export async function getConnection() {
     return pool.getConnection();
 }
 
-export async function query<T = any>(sql: string, params?: any[]): Promise<T[]> {
+export async function query<T = RowDataPacket>(
+    sql: string,
+    params?: readonly unknown[]
+): Promise<T[]> {
     try {
         // pool.execute will automatically get a connection from the pool,
         // execute the query, and release the connection back to the pool.

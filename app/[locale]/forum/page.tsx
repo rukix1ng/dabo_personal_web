@@ -3,6 +3,7 @@ import { InvitationCard } from "@/components/invitation-card";
 import { FormattedText } from "@/components/formatted-text";
 import type { Metadata } from "next";
 import { query } from "@/lib/db";
+import { formatStructuredDateTime } from "@/lib/date-time";
 
 // 启用增量静态再生成，5分钟缓存
 export const revalidate = 300;
@@ -103,7 +104,7 @@ export default async function ForumPage({ params }: PageProps) {
           "@type": "Event",
           name: locale === 'zh' ? invitation.title_zh : locale === 'ja' ? invitation.title_ja : invitation.title_en,
           description: locale === 'zh' ? invitation.abstract_zh : locale === 'ja' ? invitation.abstract_ja : invitation.abstract_en,
-          startDate: invitation.event_time,
+          startDate: formatStructuredDateTime(invitation.event_time),
           performer: {
             "@type": "Person",
             name: locale === 'zh' ? invitation.speaker_zh : locale === 'ja' ? invitation.speaker_ja : invitation.speaker_en,

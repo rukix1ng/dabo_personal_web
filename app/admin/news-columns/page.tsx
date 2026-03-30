@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, X, Save, Sparkles } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
+import { formatMonthInputValue, formatYearMonth } from "@/lib/date-time";
 
 interface NewsColumn {
     id: number;
@@ -229,22 +230,7 @@ export default function NewsColumnsManagementPage() {
     const handleEdit = (newsColumn: NewsColumn) => {
         setEditingId(newsColumn.id);
 
-        // Convert date to month format (YYYY-MM) for the month input
-        let publishDateValue = "";
-        if (newsColumn.publish_date) {
-            // Handle both ISO format (2025-03-31T16:00:00.000Z) and simple date format (2025-03-31)
-            const dateStr = newsColumn.publish_date;
-            if (dateStr.includes('T')) {
-                // ISO format - extract date part and convert to YYYY-MM
-                publishDateValue = dateStr.substring(0, 7);
-            } else if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                // Simple date format (YYYY-MM-DD) - extract YYYY-MM
-                publishDateValue = dateStr.substring(0, 7);
-            } else if (dateStr.match(/^\d{4}-\d{2}$/)) {
-                // Already in YYYY-MM format
-                publishDateValue = dateStr;
-            }
-        }
+        const publishDateValue = formatMonthInputValue(newsColumn.publish_date);
 
         setFormData({
             title_en: newsColumn.title_en,
@@ -390,16 +376,7 @@ export default function NewsColumnsManagementPage() {
 
     // Format date for display
     const formatPublishDate = (dateString: string) => {
-        // Handle YYYY-MM format (e.g., "2025-04")
-        if (dateString && dateString.match(/^\d{4}-\d{2}$/)) {
-            const [year, month] = dateString.split('-');
-            return `${year}年${parseInt(month)}月`;
-        }
-        // Handle full date format for backward compatibility
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        return `${year}年${month}月`;
+        return formatYearMonth(dateString, "zh");
     };
 
     if (loading) {

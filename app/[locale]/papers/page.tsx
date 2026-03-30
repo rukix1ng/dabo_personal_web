@@ -2,6 +2,7 @@ import { content, type Locale, locales } from "@/lib/i18n";
 import { PapersPageClient } from "./papers-client";
 import { query } from "@/lib/db";
 import type { Metadata } from "next";
+import { extractYear } from "@/lib/date-time";
 
 // 启用增量静态再生成，5分钟缓存
 export const revalidate = 300;
@@ -91,7 +92,7 @@ async function getPapers(locale: Locale): Promise<TransformedPaper[]> {
         authors: paper.author ? [paper.author] : [],
         journal: sponsor || '',
         journalName: paper.journal_name,
-        date: new Date(paper.created_at).getFullYear().toString(),
+        date: extractYear(paper.created_at),
         url: paper.paper_link || '#',
         image: paper.image,
         description: description,

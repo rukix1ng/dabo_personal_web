@@ -4,7 +4,8 @@ import { Calendar, User, Building2, ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { query } from "@/lib/db";
-import { BilibiliPlayer } from "@/components/bilibili-player";
+import { YoutubePlayer } from "@/components/youtube-player";
+import { formatLocalDateTime, formatStructuredDateTime } from "@/lib/date-time";
 
 type PageProps = {
   params: Promise<{ locale: Locale; id: string }>;
@@ -35,15 +36,16 @@ interface Invitation {
   image: string | null;
   poster: string | null;
   video_link: string | null;
+  youtube_link: string | null;
 }
 
 async function getInvitation(id: string): Promise<Invitation | null> {
   try {
-    const invitations = await query<any>(
+    const invitations = await query<Invitation>(
       `SELECT id, title_en, subtitle_en, speaker_en, speaker_institution_en, abstract_en,
               title_zh, subtitle_zh, speaker_zh, speaker_institution_zh, abstract_zh,
               title_ja, subtitle_ja, speaker_ja, speaker_institution_ja, speaker_institution_link, abstract_ja,
-              event_time, image, poster, video_link
+              event_time, image, poster, video_link, youtube_link
        FROM invitation
        WHERE id = ?`,
       [parseInt(id)]
@@ -117,35 +119,12 @@ export default async function InvitationDetailPage({ params }: PageProps) {
   const speaker = locale === "zh" ? invitation.speaker_zh : locale === "ja" ? invitation.speaker_ja : invitation.speaker_en;
   const institution = locale === "zh" ? invitation.speaker_institution_zh : locale === "ja" ? invitation.speaker_institution_ja : invitation.speaker_institution_en;
   const abstract = locale === "zh" ? invitation.abstract_zh : locale === "ja" ? invitation.abstract_ja : invitation.abstract_en;
+  const videoSectionTitle = locale === "zh" ? "报告视频" : locale === "ja" ? "講演動画" : "Talk Video";
+  const posterSectionTitle = locale === "zh" ? "海报" : locale === "ja" ? "ポスター" : "Poster";
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    if (locale === "zh") {
-      return date.toLocaleString("zh-CN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else if (locale === "ja") {
-      return date.toLocaleString("ja-JP", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return date.toLocaleString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    }
+    return formatLocalDateTime(dateString, locale);
   };
 
   // 生成结构化数据
@@ -183,7 +162,7 @@ export default async function InvitationDetailPage({ params }: PageProps) {
     "@type": "Event",
     "name": title,
     "description": abstract || title,
-    "startDate": invitation.event_time ? new Date(invitation.event_time).toISOString() : undefined,
+    "startDate": formatStructuredDateTime(invitation.event_time),
     "eventStatus": "https://schema.org/EventScheduled",
     "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
     "location": {
@@ -295,14 +274,11 @@ export default async function InvitationDetailPage({ params }: PageProps) {
       </div>
       </div>
 
-      {/* Poster */}
-      {invitation.poster && (
-        <div className="w-full overflow-hidden rounded-lg border border-border">
-          <img
-            src={invitation.poster}
-            alt={`${title} poster`}
-            className="w-full h-auto object-contain"
-          />
+      {/* Video */}
+      {invitation.youtube_link && (
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold text-foreground">{videoSectionTitle}</h2>
+          <YoutubePlayer url={invitation.youtube_link} title={title} />
         </div>
       )}
 
@@ -320,12 +296,19 @@ export default async function InvitationDetailPage({ params }: PageProps) {
         </div>
       )}
 
-      {/* Bilibili Video Player - Hidden */}
-      {/* {invitation.video_link && (
-        <div className="w-full">
-          <BilibiliPlayer bvid={invitation.video_link} title={title} />
+      {/* Poster */}
+      {invitation.poster && (
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold text-foreground">{posterSectionTitle}</h2>
+          <div className="w-full overflow-hidden rounded-lg border border-border">
+            <img
+              src={invitation.poster}
+              alt={`${title} poster`}
+              className="h-auto w-full object-contain"
+            />
+          </div>
         </div>
-      )} */}
+      )}
     </main>
   );
 }

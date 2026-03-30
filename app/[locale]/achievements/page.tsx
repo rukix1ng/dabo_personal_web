@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MediaImage } from "@/components/media-image";
 import type { Metadata } from "next";
 import { query } from "@/lib/db";
+import { formatYearMonth } from "@/lib/date-time";
 
 // 启用增量静态再生成，5分钟缓存
 export const revalidate = 300;
@@ -73,24 +74,7 @@ async function getNewsColumns(): Promise<NewsColumn[]> {
 }
 
 function formatPublishDate(dateStr: string | Date | null, locale: string): string {
-  if (!dateStr) return "";
-  let year: number, month: number;
-  if (dateStr instanceof Date) {
-    // Use local date methods to avoid UTC timezone shift
-    year = dateStr.getFullYear();
-    month = dateStr.getMonth() + 1;
-  } else {
-    const s = String(dateStr).includes('T') ? String(dateStr).substring(0, 10) : String(dateStr);
-    const parts = s.split('-');
-    if (!parts[0] || !parts[1]) return "";
-    year = parseInt(parts[0]);
-    month = parseInt(parts[1]);
-  }
-  if (locale === 'en') {
-    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    return `${monthNames[month - 1]} ${year}`;
-  }
-  return `${year}年${month}月`;
+  return formatYearMonth(dateStr, locale === "en" ? "en" : "zh");
 }
 
 function formatSeriesTag(seriesNumber: number, locale: string): string {

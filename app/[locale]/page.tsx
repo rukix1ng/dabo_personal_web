@@ -3,6 +3,7 @@ import { FormattedText } from "@/components/formatted-text";
 import { ProjectNews } from "@/components/project-news";
 import { query } from "@/lib/db";
 import type { Metadata } from "next";
+import { formatMonthInputValue } from "@/lib/date-time";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -108,10 +109,7 @@ function pickLocalizedTitle(
 
 function formatDateValue(value: string | Date | null) {
   if (!value) return "";
-  if (value instanceof Date) {
-    return value.toISOString().slice(0, 7);
-  }
-  return value.slice(0, 7);
+  return formatMonthInputValue(value);
 }
 
 async function getHomepageProjectNews(locale: Locale): Promise<{

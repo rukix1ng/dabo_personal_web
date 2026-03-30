@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { query } from "@/lib/db";
 import { ImagePreview } from "@/components/image-preview";
+import { formatStructuredDateTime, formatYearMonth } from "@/lib/date-time";
 
 type PageProps = {
   params: Promise<{ locale: Locale; id: string }>;
@@ -53,23 +54,7 @@ async function getNewsColumn(id: string): Promise<NewsColumn | null> {
 }
 
 function formatPublishDate(dateStr: string | Date | null, locale: string): string {
-  if (!dateStr) return "";
-  let year: number, month: number;
-  if (dateStr instanceof Date) {
-    year = dateStr.getFullYear();
-    month = dateStr.getMonth() + 1;
-  } else {
-    const s = String(dateStr).includes('T') ? String(dateStr).substring(0, 10) : String(dateStr);
-    const parts = s.split('-');
-    if (!parts[0] || !parts[1]) return "";
-    year = parseInt(parts[0]);
-    month = parseInt(parts[1]);
-  }
-  if (locale === 'en') {
-    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    return `${monthNames[month - 1]} ${year}`;
-  }
-  return `${year}年${month}月`;
+  return formatYearMonth(dateStr, locale === "en" ? "en" : "zh");
 }
 
 function formatSeriesTag(seriesNumber: number, locale: string): string {
@@ -166,7 +151,7 @@ export default async function NewsColumnDetailPage({ params }: PageProps) {
     "headline": title,
     "description": contentText?.substring(0, 200) || title,
     "image": item.image ? [item.image] : undefined,
-    "datePublished": item.publish_date ? new Date(item.publish_date).toISOString() : undefined,
+    "datePublished": formatStructuredDateTime(item.publish_date),
     "author": {
       "@type": "Organization",
       "name": journalName || t.meta.title,

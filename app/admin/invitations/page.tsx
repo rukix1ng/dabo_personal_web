@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash2, X, Save, Sparkles } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
+import { formatAdminDateTime, formatDateTimeLocalValue } from "@/lib/date-time";
 
 interface Invitation {
     id: number;
@@ -30,6 +31,7 @@ interface Invitation {
     image: string | null;
     poster: string | null;
     video_link: string | null;
+    youtube_link: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -57,6 +59,7 @@ interface InvitationFormData {
     event_time: string;
     image: string;
     poster: string;
+    youtube_link: string;
     video_link: string;
 }
 
@@ -100,6 +103,7 @@ export default function InvitationsManagementPage() {
         event_time: "",
         image: "",
         poster: "",
+        youtube_link: "",
         video_link: "",
     });
 
@@ -255,9 +259,10 @@ export default function InvitationsManagementPage() {
             display_title_en: invitation.display_title_en || "",
             display_title_zh: invitation.display_title_zh || "",
             display_title_ja: invitation.display_title_ja || "",
-            event_time: invitation.event_time ? invitation.event_time.substring(0, 16) : "",
+            event_time: formatDateTimeLocalValue(invitation.event_time),
             image: invitation.image || "",
             poster: invitation.poster || "",
+            youtube_link: invitation.youtube_link || "",
             video_link: invitation.video_link || "",
         });
         setShowForm(true);
@@ -288,6 +293,7 @@ export default function InvitationsManagementPage() {
             event_time: "",
             image: "",
             poster: "",
+            youtube_link: "",
             video_link: "",
         });
         setEditingId(null);
@@ -911,19 +917,19 @@ export default function InvitationsManagementPage() {
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-foreground">
-                                        Bilibili BV号
+                                        YouTube 链接
                                     </label>
                                     <input
-                                        type="text"
-                                        value={formData.video_link}
+                                        type="url"
+                                        value={formData.youtube_link}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, video_link: e.target.value })
+                                            setFormData({ ...formData, youtube_link: e.target.value })
                                         }
-                                        placeholder="例如：BV1xx411c7mD"
+                                        placeholder="https://www.youtube.com/watch?v=..."
                                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                     />
                                     <p className="mt-1 text-xs text-muted-foreground">
-                                        请输入 Bilibili 视频的 BV 号，例如：BV1xx411c7mD
+                                        支持 YouTube watch、youtu.be、embed、shorts 链接
                                     </p>
                                 </div>
                             </div>
@@ -1043,7 +1049,7 @@ export default function InvitationsManagementPage() {
                                         </td>
                                         <td className="px-6 py-4 text-sm text-muted-foreground">
                                             {invitation.event_time
-                                                ? new Date(invitation.event_time).toLocaleString("zh-CN")
+                                                ? formatAdminDateTime(invitation.event_time)
                                                 : "-"}
                                         </td>
                                         <td className="px-6 py-4">

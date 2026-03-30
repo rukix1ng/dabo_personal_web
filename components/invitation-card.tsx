@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, User, Building2 } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
+import { formatLocalDateTime } from "@/lib/date-time";
 
 interface Invitation {
   id: number;
@@ -49,32 +50,7 @@ export function InvitationCard({ invitation, locale, priority = false }: Invitat
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    if (locale === "zh") {
-      return date.toLocaleString("zh-CN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else if (locale === "ja") {
-      return date.toLocaleString("ja-JP", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return date.toLocaleString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    }
+    return formatLocalDateTime(dateString, locale);
   };
 
   return (
