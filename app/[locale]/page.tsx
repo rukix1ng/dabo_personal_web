@@ -213,15 +213,12 @@ export default async function LocaleHome({ params }: PageProps) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@type": "Project",
     name: t.hero.name,
-    jobTitle: t.hero.title,
-    email: `mailto:${t.info.email}`,
-    telephone: t.info.phone,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: t.info.address,
-    },
+    alternateName: t.hero.title,
+    description: t.hero.description,
+    keywords: t.meta.keywords.join(", "),
+    areaServed: "Japan",
     knowsAbout: t.info.fields,
   };
 

@@ -12,9 +12,9 @@ export const localeLabels: Record<Locale, string> = {
 export const content = {
   en: {
     meta: {
-      title: "High-Performance Materials for Semiconductor Equipment | NIMS-Lam Research Project",
+      title: "Industry-Academia Exchange Platform for Semiconductor Equipment Materials | A Collaborative Project of NIMS and Lam Research",
       description:
-        "Research project on high-performance materials for semiconductor manufacturing equipment, supported by Lam Research and NIMS. Focus on electron sources, optical components, and structural materials for next-generation semiconductor equipment.",
+        "Industry-academia exchange platform for semiconductor equipment materials, developed under a collaborative project between Lam Research and NIMS. Focused on joint research, invited talks, and research outcomes for next-generation semiconductor equipment materials.",
       keywords: [
         "semiconductor equipment",
         "semiconductor materials",
@@ -27,8 +27,8 @@ export const content = {
       ],
     },
     hero: {
-      name: "High-Performance Materials for Semiconductor Manufacturing Systems",
-      title: "Principal Researcher, Quantum Beam Diffraction Group, Advanced Analysis Field, Research Center for Structural Materials",
+      name: "Industry-Academia Exchange Platform for Semiconductor Equipment Materials",
+      title: "A Collaborative Project of NIMS and Lam Research",
       description: "This project is based on a strategic donation and collaboration from Lam Research Corporation (Fremont, U.S.A.) to the National Institute for Materials Science (NIMS, Tsukuba, Japan). NIMS Principal Researcher Dr. Da Bo serves as the project leader and donation recipient."
     },
     info: {
@@ -246,9 +246,9 @@ export const content = {
   },
   zh: {
     meta: {
-      title: "面向半导体装备的高性能材料研究 | NIMS-泛林集团合作项目",
+      title: "半导体装备材料产学交流平台 | NIMS-泛林集团合作项目",
       description:
-        "半导体制造装备高性能材料研究项目，由泛林集团（Lam Research）与日本物质材料研究机构（NIMS）合作支持。聚焦电子源、光学元件、结构材料等关键材料，推动新一代半导体装备发展。",
+        "半导体装备材料产学交流平台，基于 NIMS 与泛林集团合作项目建设，聚焦联合研究、邀请报告与研究成果交流，服务新一代半导体装备关键材料发展。",
       keywords: [
         "半导体装备",
         "半导体材料",
@@ -261,8 +261,8 @@ export const content = {
       ],
     },
     hero: {
-      name: "面向半导体制造系统的高性能材料研究",
-      title: "材料基础研究中心 先进解析领域 量子束衍射组主任研究员",
+      name: "半导体装备材料产学交流平台",
+      title: "NIMS-泛林集团合作项目",
       description: "本项目基于泛林集团（Lam Research Corporation, Fremont, U.S.A.）向日本国立材料研究所（NIMS, Tsukuba, Japan）提供的战略性捐赠及相关合作开展，日本国立材料研究所达博主任研究员为项目负责人及捐赠接收方。"
     },
     info: {
@@ -480,9 +480,9 @@ export const content = {
   },
   ja: {
     meta: {
-      title: "半導体製造装置向け高性能材料研究 | NIMS-ラムリサーチ共同プロジェクト",
+      title: "半導体装置材料産学交流プラットフォーム | NIMS・ラムリサーチ共同プロジェクト",
       description:
-        "ラムリサーチ（Lam Research）と物質・材料研究機構（NIMS）が支援する半導体製造装置向け高性能材料研究プロジェクト。電子源、光学部品、構造材料など次世代半導体装置の重要材料に焦点を当てています。",
+        "NIMS とラムリサーチの共同プロジェクトに基づく半導体装置材料の産学交流プラットフォーム。共同研究、招待講演、研究成果の発信を通じて、次世代半導体装置材料の発展を支えます。",
       keywords: [
         "半導体装置",
         "半導体材料",
@@ -495,8 +495,8 @@ export const content = {
       ],
     },
     hero: {
-      name: "半導体製造システム向け高性能材料研究",
-      title: "材料基盤研究センター 先進解析領域 量子ビーム回折グループ 主任研究員",
+      name: "半導体装置材料産学交流プラットフォーム",
+      title: "NIMS・ラムリサーチ共同プロジェクト",
       description: "本プロジェクトは、Lam Research Corporation（米国フリーモント）から国立研究開発法人物質・材料研究機構（NIMS、日本つくば）への戦略的寄付および関連協力に基づいて実施されています。NIMS主任研究員の達博博士がプロジェクトリーダーおよび寄付受領者を務めています。"
     },
     info: {

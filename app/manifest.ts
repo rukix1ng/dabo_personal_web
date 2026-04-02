@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Academic Profile - Semiconductor Research',
-    short_name: 'Academic Profile',
-    description: 'Academic homepage focused on theoretical physics and semiconductor research',
+    name: 'Industry-Academia Exchange Platform for Semiconductor Equipment Materials',
+    short_name: 'SEMI Materials Platform',
+    description: 'Industry-academia exchange platform for semiconductor equipment materials under the NIMS and Lam Research collaborative project.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

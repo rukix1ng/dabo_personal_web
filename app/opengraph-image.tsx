@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 // Image metadata
-export const alt = 'Academic Profile - Semiconductor Research';
+export const alt = 'Industry-Academia Exchange Platform for Semiconductor Equipment Materials';
 export const size = {
   width: 1200,
   height: 630,
@@ -38,14 +38,15 @@ export default async function OgImage() {
         >
           <div
             style={{
-              fontSize: 72,
+              fontSize: 54,
               fontWeight: 'bold',
               color: '#1a1a1a',
               marginBottom: '20px',
               textAlign: 'center',
+              maxWidth: '900px',
             }}
           >
-            Academic Profile
+            Industry-Academia Exchange Platform for Semiconductor Equipment Materials
           </div>
           <div
             style={{
@@ -55,7 +56,7 @@ export default async function OgImage() {
               maxWidth: '800px',
             }}
           >
-            Theoretical Physics & Semiconductor Research
+            A Collaborative Project of NIMS and Lam Research
           </div>
         </div>
       </div>

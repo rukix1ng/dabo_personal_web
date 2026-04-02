@@ -20,21 +20,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: {
-    default: "Academic Profile - Semiconductor Research",
-    template: "%s | Academic Profile",
+    default: "Industry-Academia Exchange Platform for Semiconductor Equipment Materials",
+    template: "%s",
   },
   description:
-    "Academic homepage focused on theoretical physics and semiconductor research.",
+    "Industry-academia exchange platform for semiconductor equipment materials under the NIMS and Lam Research collaborative project.",
   keywords: [
-    "semiconductor research",
-    "theoretical physics",
-    "academic profile",
+    "semiconductor equipment materials",
+    "industry-academia exchange",
+    "NIMS",
+    "Lam Research",
     "research papers",
     "publications",
   ],
-  authors: [{ name: "Academic Profile" }],
-  creator: "Academic Profile",
-  publisher: "Academic Profile",
+  authors: [{ name: "Semiconductor Equipment Materials Industry-Academia Exchange Platform" }],
+  creator: "Semiconductor Equipment Materials Industry-Academia Exchange Platform",
+  publisher: "Semiconductor Equipment Materials Industry-Academia Exchange Platform",
   formatDetection: {
     email: false,
     address: false,
@@ -89,8 +90,8 @@ export default async function RootLayout({
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Academic Profile",
-    description: "Academic homepage focused on theoretical physics and semiconductor research",
+    name: "Semiconductor Equipment Materials Industry-Academia Exchange Platform",
+    description: "Industry-academia exchange platform for semiconductor equipment materials under the NIMS and Lam Research collaborative project.",
     url: baseUrl,
     inLanguage: ["en", "zh", "ja"],
     potentialAction: {
